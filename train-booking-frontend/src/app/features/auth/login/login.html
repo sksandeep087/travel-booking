@@ -1,0 +1,308 @@
+<div class="auth-page">
+
+  <div class="auth-container">
+
+    <!-- LEFT SIDE -->
+
+    <div class="auth-brand">
+
+      <div class="brand-content">
+
+        <div class="brand-icon">
+
+          <i class="bi bi-train-front-fill"></i>
+
+        </div>
+
+        <h1>
+          TrainBook
+        </h1>
+
+        <p>
+          Your journey starts here.
+          Search trains, select your seat
+          and travel with ease.
+        </p>
+
+
+        <div class="brand-features">
+
+          <div>
+            <i class="bi bi-check-circle-fill"></i>
+            Easy train search
+          </div>
+
+          <div>
+            <i class="bi bi-check-circle-fill"></i>
+            Quick seat booking
+          </div>
+
+          <div>
+            <i class="bi bi-check-circle-fill"></i>
+            Secure payments
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+
+    <div class="auth-form-section">
+
+      <div class="auth-form-container">
+
+
+        <div class="mobile-logo">
+
+          <div class="brand-icon">
+
+            <i class="bi bi-train-front-fill"></i>
+
+          </div>
+
+          <span>
+            TrainBook
+          </span>
+
+        </div>
+
+
+        <div class="form-header">
+
+          <span>
+            WELCOME BACK
+          </span>
+
+          <h2>
+            Sign in to your account
+          </h2>
+
+          <p>
+            Enter your details to continue your journey.
+          </p>
+
+        </div>
+
+
+        <!-- ERROR -->
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+
+          <i class="bi bi-exclamation-circle me-2"></i>
+
+          {{ errorMessage }}
+
+        </div>
+
+        <!-- LOGIN MODE TABS -->
+
+        <div class="login-mode-tabs">
+          <button type="button" [class.active]="loginMode === 'PASSWORD'" (click)="useLoginMode('PASSWORD')">
+            <i class="bi bi-lock"></i>
+            <span>Password Login</span>
+          </button>
+
+          <button type="button" [class.active]="loginMode === 'OTP'" (click)="useLoginMode('OTP')">
+            <i class="bi bi-phone"></i>
+            <span>OTP Login</span>
+          </button>
+        </div>
+        <!-- LOGIN FORM -->
+
+        <form *ngIf="loginMode === 'PASSWORD'" [formGroup]="loginForm" (ngSubmit)="login($event)">
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label>
+              Email Address
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="bi bi-envelope"></i>
+
+              <input type="email" formControlName="email" placeholder="Enter your email" autocomplete="email"
+                class="form-control" [class.is-invalid]="
+                  email.invalid &&
+                  email.touched
+                ">
+
+            </div>
+
+
+            <div *ngIf="email.invalid && email.touched" class="field-error">
+
+              <span *ngIf="email.errors?.['required']">
+                Email is required.
+              </span>
+
+              <span *ngIf="email.errors?.['email']">
+                Please enter a valid email.
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- PASSWORD -->
+
+          <div class="form-group">
+
+            <label>
+              Password
+            </label>
+
+            <div class="input-wrapper">
+
+              <i class="bi bi-lock"></i>
+
+              <input [type]="
+                  showPassword
+                    ? 'text'
+                    : 'password'
+                " formControlName="password" placeholder="Enter your password" autocomplete="current-password"
+                class="form-control" [class.is-invalid]="
+                  password.invalid &&
+                  password.touched
+                ">
+
+
+              <button type="button" class="password-toggle" (click)="togglePassword()">
+
+                <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword">
+                </i>
+
+              </button>
+
+            </div>
+
+
+            <div *ngIf="
+                password.invalid &&
+                password.touched
+              " class="field-error">
+
+              <span *ngIf="password.errors?.['required']">
+
+                Password is required.
+
+              </span>
+
+              <span *ngIf="password.errors?.['minlength']">
+
+                Password must be at least 6 characters.
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- SUBMIT -->
+
+          <button type="submit" class="login-btn" [disabled]="loading">
+
+            <i *ngIf="!loading" class="bi bi-box-arrow-in-right me-2">
+            </i>
+
+            <span *ngIf="loading">
+              Signing in...
+            </span>
+
+            <span *ngIf="!loading">
+              Sign In
+            </span>
+
+          </button>
+
+
+        </form>
+
+        <!-- OTP LOGIN FORM -->
+
+        <div *ngIf="loginMode === 'OTP'">
+
+          <div class="form-group">
+            <label for="loginMobile">Mobile Number</label>
+
+            <div class="input-wrapper">
+              <i class="bi bi-phone"></i>
+
+              <input id="loginMobile" type="tel" class="form-control" placeholder="Enter 10-digit mobile number"
+                maxlength="10" inputmode="numeric" autocomplete="tel" [(ngModel)]="mobile"
+                [ngModelOptions]="{ standalone: true }" [disabled]="otpSent">
+            </div>
+          </div>
+
+          <button *ngIf="!otpSent" type="button" class="login-btn" [disabled]="otpLoading" (click)="sendLoginOtp()">
+
+            <span *ngIf="otpLoading" class="spinner-border spinner-border-sm me-2"></span>
+
+            {{ otpLoading ? 'Sending OTP...' : 'Send OTP' }}
+          </button>
+
+          <div *ngIf="otpSent">
+
+            <div class="form-group mt-3">
+              <label for="loginOtp">Enter OTP</label>
+
+              <div class="input-wrapper">
+                <i class="bi bi-shield-lock"></i>
+
+                <input id="loginOtp" type="text" class="form-control" placeholder="Enter 6-digit OTP" maxlength="6"
+                  inputmode="numeric" autocomplete="one-time-code" [(ngModel)]="otp"
+                  [ngModelOptions]="{ standalone: true }">
+              </div>
+            </div>
+
+            <button type="button" class="login-btn" [disabled]="otpVerifying" (click)="verifyLoginOtp()">
+
+              <span *ngIf="otpVerifying" class="spinner-border spinner-border-sm me-2"></span>
+
+              {{ otpVerifying ? 'Verifying...' : 'Verify OTP & Sign In' }}
+            </button>
+
+            <button type="button" class="btn btn-link mt-2" [disabled]="otpLoading" (click)="sendLoginOtp()">
+
+              {{ otpLoading ? 'Sending...' : 'Resend OTP' }}
+            </button>
+
+          </div>
+        </div>
+
+
+        <div class="forgot-password-link">
+          <a routerLink="/forgot-password">
+            Forgot Password?
+          </a>
+        </div>
+
+        <!-- REGISTER -->
+
+        <div class="register-link">
+
+          Don't have an account?
+
+          <a routerLink="/register">
+            Create an account
+          </a>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

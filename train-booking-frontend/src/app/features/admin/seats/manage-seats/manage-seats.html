@@ -1,0 +1,465 @@
+<div class="seat-page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div>
+            <h1>Manage Seats</h1>
+            <p>Manage train coaches and their seats</p>
+        </div>
+
+        <button class="btn-primary" type="button" (click)="openAddModal()" [disabled]="!selectedCoachId">
+
+            <span>+</span>
+            Add Seat
+
+        </button>
+
+    </div>
+
+
+    <!-- SELECTION AREA -->
+    <div class="selection-card">
+
+        <div class="selection-title">
+            <h2>Select Train & Coach</h2>
+
+            <button *ngIf="selectedTrainId || selectedCoachId" type="button" class="clear-btn"
+                (click)="clearSelection()">
+
+                Clear
+
+            </button>
+        </div>
+
+
+        <div class="selection-grid">
+
+            <!-- TRAIN -->
+            <div class="form-group">
+
+                <label>Train</label>
+
+                <select [(ngModel)]="selectedTrainId" (ngModelChange)="onTrainChange()">
+
+                    <option [ngValue]="null">
+                        Select Train
+                    </option>
+
+                    <option *ngFor="let train of trains" [ngValue]="train.id">
+
+                        {{ train.trainNumber }} -
+                        {{ train.trainName }}
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- COACH -->
+            <div class="form-group">
+
+                <label>Coach</label>
+
+                <select [(ngModel)]="selectedCoachId" (ngModelChange)="onCoachChange()" [disabled]="!selectedTrainId">
+
+                    <option [ngValue]="null">
+                        Select Coach
+                    </option>
+
+                    <option *ngFor="let coach of coaches" [ngValue]="coach.id">
+
+                        {{ coach.coachNumber }}
+                        -
+                        {{ coach.coachType }}
+                        ({{ coach.totalSeats }} seats)
+
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOADING COACH -->
+        <div class="loading-small" *ngIf="loadingCoaches">
+
+            Loading coaches...
+
+        </div>
+
+    </div>
+
+
+    <!-- NO COACH -->
+    <div class="empty-state" *ngIf="selectedTrainId && !loadingCoaches && coaches.length === 0">
+
+        <div class="empty-icon">🚆</div>
+
+        <h3>No Coaches Found</h3>
+
+        <p>
+            No coaches are available for the selected train.
+        </p>
+
+    </div>
+
+
+    <!-- SEAT CONTENT -->
+    <div class="seat-content" *ngIf="selectedCoachId">
+
+
+        <!-- SUMMARY -->
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    💺
+                </div>
+
+                <div>
+                    <span>Total Seats</span>
+                    <strong>{{ totalSeats }}</strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ↓
+                </div>
+
+                <div>
+                    <span>Lower</span>
+                    <strong>{{ lowerSeats }}</strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    —
+                </div>
+
+                <div>
+                    <span>Middle</span>
+                    <strong>{{ middleSeats }}</strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ↑
+                </div>
+
+                <div>
+                    <span>Upper</span>
+                    <strong>{{ upperSeats }}</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEAT LIST -->
+        <div class="table-card">
+
+            <div class="table-header">
+
+                <div>
+                    <h2>Seats</h2>
+
+                    <p *ngIf="selectedCoachId">
+                        Selected coach:
+                        <strong>
+                            {{
+                            coaches.find(c => c.id === selectedCoachId)?.coachNumber
+                            }}
+                        </strong>
+                    </p>
+                </div>
+
+
+                <div class="search-box">
+
+                    <input type="text" [(ngModel)]="searchText" placeholder="Search seat..." />
+
+                </div>
+
+            </div>
+
+
+            <!-- LOADING -->
+            <div class="table-loading" *ngIf="loadingSeats">
+
+                Loading seats...
+
+            </div>
+
+
+            <!-- EMPTY -->
+            <div class="empty-table" *ngIf="!loadingSeats && filteredSeats.length === 0">
+
+                <div class="empty-icon">
+                    💺
+                </div>
+
+                <h3>No Seats Found</h3>
+
+                <p>
+                    Add seats to this coach to get started.
+                </p>
+
+                <button type="button" class="btn-primary" (click)="openAddModal()">
+
+                    + Add Seat
+
+                </button>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="table-wrapper" *ngIf="!loadingSeats && filteredSeats.length > 0">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Seat Number</th>
+
+                            <th>Seat Type</th>
+
+                            <th>Coach</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr *ngFor="
+                let seat of filteredSeats;
+                let i = index
+              ">
+
+                            <td>
+                                {{ i + 1 }}
+                            </td>
+
+
+                            <td>
+
+                                <span class="seat-number">
+                                    {{ seat.seatNumber }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="seat-type">
+                                    {{ seat.seatType }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                {{ seat.coach.coachNumber }}
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="action-buttons">
+
+                                    <button type="button" class="btn-edit" (click)="openEditModal(seat)">
+
+                                        Edit
+
+                                    </button>
+
+
+                                    <button type="button" class="btn-delete" (click)="deleteSeat(seat)">
+
+                                        Delete
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SELECT COACH MESSAGE -->
+    <div class="select-message" *ngIf="!selectedCoachId && !loadingTrains">
+
+        <div class="select-message-icon">
+            💺
+        </div>
+
+        <h2>Select a Coach</h2>
+
+        <p>
+            Select a train and coach above to manage seats.
+        </p>
+
+    </div>
+
+
+    <!-- ADD / EDIT MODAL -->
+    <div class="seat-modal-overlay" *ngIf="showModal" (click)="closeModal()">
+
+        <div class="seat-modal" (click)="$event.stopPropagation()">
+
+
+            <!-- MODAL HEADER -->
+            <div class="seat-modal-header">
+
+                <div>
+
+                    <h2>
+                        {{ isEditMode ? 'Edit Seat' : 'Add Seat' }}
+                    </h2>
+
+                    <p>
+                        {{
+                        isEditMode
+                        ? 'Update seat details'
+                        : 'Add a new seat to the coach'
+                        }}
+                    </p>
+
+                </div>
+
+
+                <button type="button" class="modal-close" (click)="closeModal()">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <!-- MODAL BODY -->
+            <div class="seat-modal-body">
+
+                <!-- SEAT NUMBER -->
+                <div class="form-group">
+
+                    <label>
+                        Seat Number
+                        <span>*</span>
+                    </label>
+
+                    <input type="text" [(ngModel)]="seatForm.seatNumber" placeholder="Example: S1, 1, 2, 3" />
+
+                </div>
+
+
+                <!-- SEAT TYPE -->
+                <div class="form-group">
+
+                    <label>
+                        Seat Type
+                        <span>*</span>
+                    </label>
+
+                    <select [(ngModel)]="seatForm.seatType">
+
+                        <option *ngFor="let type of seatTypes" [value]="type">
+
+                            {{ type }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- COACH -->
+                <div class="form-group">
+
+                    <label>
+                        Coach
+                        <span>*</span>
+                    </label>
+
+                    <select [(ngModel)]="seatForm.coachId">
+
+                        <option *ngFor="let coach of coaches" [ngValue]="coach.id">
+
+                            {{ coach.coachNumber }}
+                            -
+                            {{ coach.coachType }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- MODAL FOOTER -->
+            <div class="seat-modal-footer">
+
+                <button type="button" class="btn-secondary" (click)="closeModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button type="button" class="btn-primary" (click)="saveSeat()">
+
+                    {{ isEditMode ? 'Update Seat' : 'Add Seat' }}
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,342 @@
+<div class="payment-page">
+
+  <div class="container py-5">
+
+    <!-- ============================================= -->
+    <!-- HEADER -->
+    <!-- ============================================= -->
+
+    <div class="step-label">
+      PAYMENT
+    </div>
+
+    <h1>
+      Complete Your Payment
+    </h1>
+
+    <p class="subtitle">
+      Secure payment for your train booking.
+    </p>
+
+
+    <!-- ============================================= -->
+    <!-- ERROR -->
+    <!-- ============================================= -->
+
+    <div
+      *ngIf="errorMessage"
+      class="alert alert-danger">
+
+      <i class="bi bi-exclamation-circle me-2"></i>
+
+      {{ errorMessage }}
+
+    </div>
+
+
+    <!-- ============================================= -->
+    <!-- SUCCESS -->
+    <!-- ============================================= -->
+
+    <div
+      *ngIf="paymentSuccess"
+      class="success-card">
+
+      <div class="success-icon">
+
+        <i class="bi bi-check-lg"></i>
+
+      </div>
+
+      <h2>
+        Payment Successful
+      </h2>
+
+      <p>
+        Your booking has been confirmed.
+      </p>
+
+
+      <div
+        *ngIf="payment"
+        class="success-details">
+
+        <div>
+
+          <span>
+            Booking ID
+          </span>
+
+          <strong>
+            #{{ payment.bookingId }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Transaction ID
+          </span>
+
+          <strong>
+            {{ payment.transactionId }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Amount
+          </span>
+
+          <strong>
+            ₹{{ payment.amount | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="primary-btn"
+        (click)="goToMyBookings()">
+
+        My Bookings
+
+        <i class="bi bi-arrow-right ms-2"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- ============================================= -->
+    <!-- PAYMENT -->
+    <!-- ============================================= -->
+
+    <div
+      *ngIf="!paymentSuccess"
+      class="payment-card">
+
+
+      <!-- =========================================== -->
+      <!-- BOOKING INFO -->
+      <!-- =========================================== -->
+
+      <div class="booking-info">
+
+        <div>
+
+          <span>
+            BOOKING
+          </span>
+
+          <strong>
+            #{{ bookingId }}
+          </strong>
+
+        </div>
+
+
+        <div
+          *ngIf="payment">
+
+          <span>
+            AMOUNT
+          </span>
+
+          <strong>
+            ₹{{ payment.amount | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================================== -->
+      <!-- PAYMENT METHOD -->
+      <!-- =========================================== -->
+
+      <h3>
+        Select Payment Method
+      </h3>
+
+
+      <div class="payment-methods">
+
+
+        <!-- UPI -->
+
+        <button
+          type="button"
+          class="payment-method"
+          [class.selected]="selectedPaymentMethod === 'UPI'"
+          (click)="selectPaymentMethod('UPI')">
+
+          <i class="bi bi-phone"></i>
+
+          <div>
+
+            <strong>
+              UPI
+            </strong>
+
+            <span>
+              Google Pay, PhonePe, Paytm
+            </span>
+
+          </div>
+
+          <i
+            *ngIf="selectedPaymentMethod === 'UPI'"
+            class="bi bi-check-circle-fill check">
+          </i>
+
+        </button>
+
+
+        <!-- CARD -->
+
+        <button
+          type="button"
+          class="payment-method"
+          [class.selected]="selectedPaymentMethod === 'CARD'"
+          (click)="selectPaymentMethod('CARD')">
+
+          <i class="bi bi-credit-card"></i>
+
+          <div>
+
+            <strong>
+              Card
+            </strong>
+
+            <span>
+              Credit / Debit Card
+            </span>
+
+          </div>
+
+          <i
+            *ngIf="selectedPaymentMethod === 'CARD'"
+            class="bi bi-check-circle-fill check">
+          </i>
+
+        </button>
+
+
+        <!-- NET BANKING -->
+
+        <button
+          type="button"
+          class="payment-method"
+          [class.selected]="selectedPaymentMethod === 'NET_BANKING'"
+          (click)="selectPaymentMethod('NET_BANKING')">
+
+          <i class="bi bi-bank"></i>
+
+          <div>
+
+            <strong>
+              Net Banking
+            </strong>
+
+            <span>
+              All major banks
+            </span>
+
+          </div>
+
+          <i
+            *ngIf="selectedPaymentMethod === 'NET_BANKING'"
+            class="bi bi-check-circle-fill check">
+          </i>
+
+        </button>
+
+
+        <!-- WALLET -->
+
+        <button
+          type="button"
+          class="payment-method"
+          [class.selected]="selectedPaymentMethod === 'WALLET'"
+          (click)="selectPaymentMethod('WALLET')">
+
+          <i class="bi bi-wallet2"></i>
+
+          <div>
+
+            <strong>
+              Wallet
+            </strong>
+
+            <span>
+              Supported wallets
+            </span>
+
+          </div>
+
+          <i
+            *ngIf="selectedPaymentMethod === 'WALLET'"
+            class="bi bi-check-circle-fill check">
+          </i>
+
+        </button>
+
+      </div>
+
+
+      <!-- =========================================== -->
+      <!-- PAY BUTTON -->
+      <!-- =========================================== -->
+
+      <button
+        type="button"
+        class="pay-btn"
+        [disabled]="creatingPayment || processingPayment"
+        (click)="proceedToPayment()">
+
+        <span
+          *ngIf="creatingPayment || processingPayment"
+          class="spinner-border spinner-border-sm me-2">
+        </span>
+
+
+        <i
+          *ngIf="!creatingPayment && !processingPayment"
+          class="bi bi-shield-check me-2">
+        </i>
+
+
+        {{
+          creatingPayment
+            ? 'Creating Payment...'
+            : processingPayment
+              ? 'Processing Payment...'
+              : 'Pay Securely'
+        }}
+
+      </button>
+
+
+      <div class="secure-note">
+
+        <i class="bi bi-lock-fill"></i>
+
+        Secure payment powered by Razorpay
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

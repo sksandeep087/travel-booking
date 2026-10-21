@@ -1,0 +1,639 @@
+<div class="manage-trains-page">
+
+  <!-- ================================================= -->
+  <!-- PAGE HEADER -->
+  <!-- ================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        Admin
+        <span>/</span>
+        Manage Trains
+      </div>
+
+      <h1>
+        Manage Trains
+      </h1>
+
+      <p>
+        Add, update and manage all trains.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="openAddForm()"
+    >
+      <i class="bi bi-plus-lg"></i>
+      Add Train
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- SUCCESS MESSAGE -->
+  <!-- ================================================= -->
+
+  <div
+    *ngIf="successMessage"
+    class="alert success-alert"
+  >
+    <i class="bi bi-check-circle-fill"></i>
+
+    <span>
+      {{ successMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="successMessage = ''"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- ERROR MESSAGE -->
+  <!-- ================================================= -->
+
+  <div
+    *ngIf="errorMessage"
+    class="alert error-alert"
+  >
+    <i class="bi bi-exclamation-circle-fill"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="errorMessage = ''"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- SEARCH -->
+  <!-- ================================================= -->
+
+  <div class="toolbar">
+
+    <div class="search-box">
+
+      <i class="bi bi-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Search train number, name or station..."
+      />
+
+      <button
+        *ngIf="searchText"
+        type="button"
+        class="clear-search"
+        (click)="searchText = ''"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="train-count">
+
+      {{ filteredTrains.length }}
+
+      <span>
+        Train{{ filteredTrains.length !== 1 ? 's' : '' }}
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- LOADING -->
+  <!-- ================================================= -->
+
+  <div
+    *ngIf="loading"
+    class="loading-box"
+  >
+
+    <div class="spinner"></div>
+
+    <span>
+      Loading trains...
+    </span>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- TRAIN TABLE -->
+  <!-- ================================================= -->
+
+  <div
+    *ngIf="!loading"
+    class="table-card"
+  >
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>#</th>
+
+            <th>Train</th>
+
+            <th>Route</th>
+
+            <th>Departure</th>
+
+            <th>Arrival</th>
+
+            <th>Status</th>
+
+            <th class="action-column">
+              Actions
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="
+              let train of filteredTrains;
+              let i = index;
+              trackBy: trackByTrainId
+            "
+          >
+
+            <!-- NUMBER -->
+
+            <td class="serial">
+              {{ i + 1 }}
+            </td>
+
+
+            <!-- TRAIN -->
+
+            <td>
+
+              <div class="train-info">
+
+                <div class="train-icon">
+                  <i class="bi bi-train-front-fill"></i>
+                </div>
+
+                <div>
+
+                  <strong>
+                    {{ train.trainNumber }}
+                  </strong>
+
+                  <span>
+                    {{ train.trainName }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- ROUTE -->
+
+            <td>
+
+              <div class="route">
+
+                <div>
+
+                  <strong>
+                    {{ train.sourceStationCode }}
+                  </strong>
+
+                  <span>
+                    {{ train.sourceStationName }}
+                  </span>
+
+                </div>
+
+                <i class="bi bi-arrow-right"></i>
+
+                <div>
+
+                  <strong>
+                    {{ train.destinationStationCode }}
+                  </strong>
+
+                  <span>
+                    {{ train.destinationStationName }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- DEPARTURE -->
+
+            <td>
+
+              <div class="time">
+
+                {{ train.departureTime | date:'dd MMM yyyy' }}
+
+                <strong>
+                  {{ train.departureTime | date:'hh:mm a' }}
+                </strong>
+
+              </div>
+
+            </td>
+
+
+            <!-- ARRIVAL -->
+
+            <td>
+
+              <div class="time">
+
+                {{ train.arrivalTime | date:'dd MMM yyyy' }}
+
+                <strong>
+                  {{ train.arrivalTime | date:'hh:mm a' }}
+                </strong>
+
+              </div>
+
+            </td>
+
+
+            <!-- STATUS -->
+
+            <td>
+
+              <button
+                type="button"
+                class="status-btn"
+                [class.active]="train.active"
+                [class.inactive]="!train.active"
+                (click)="toggleTrainStatus(train)"
+              >
+
+                <span></span>
+
+                {{ train.active ? 'Active' : 'Inactive' }}
+
+              </button>
+
+            </td>
+
+
+            <!-- ACTIONS -->
+
+            <td>
+
+              <div class="actions">
+
+                <button
+                  type="button"
+                  class="action-btn edit"
+                  title="Edit"
+                  (click)="openEditForm(train)"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+
+
+                <button
+                  type="button"
+                  class="action-btn delete"
+                  title="Delete"
+                  (click)="deleteTrain(train)"
+                >
+                  <i class="bi bi-trash3"></i>
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          <!-- NO DATA -->
+
+          <tr
+            *ngIf="filteredTrains.length === 0"
+          >
+
+            <td
+              colspan="7"
+              class="empty-state"
+            >
+
+              <div class="empty-icon">
+                <i class="bi bi-train-front"></i>
+              </div>
+
+              <h3>
+                No trains found
+              </h3>
+
+              <p>
+                No train matches your search.
+              </p>
+
+              <button
+                type="button"
+                class="add-btn small"
+                (click)="openAddForm()"
+              >
+                <i class="bi bi-plus-lg"></i>
+                Add Train
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- ADD / EDIT MODAL -->
+  <!-- ================================================= -->
+
+  <div
+    *ngIf="showForm"
+    class="modal-backdrop"
+    (click)="closeForm()"
+  >
+
+    <div
+      class="train-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- MODAL HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <h2>
+            {{ editMode ? 'Edit Train' : 'Add Train' }}
+          </h2>
+
+          <p>
+            {{
+              editMode
+                ? 'Update train information'
+                : 'Enter train information'
+            }}
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeForm()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- MODAL BODY -->
+
+      <div class="modal-body">
+
+        <!-- TRAIN NUMBER -->
+
+        <div class="form-group">
+
+          <label>
+            Train Number
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="trainForm.trainNumber"
+            placeholder="e.g. 12951"
+          />
+
+        </div>
+
+
+        <!-- TRAIN NAME -->
+
+        <div class="form-group">
+
+          <label>
+            Train Name
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="trainForm.trainName"
+            placeholder="e.g. Mumbai Rajdhani"
+          />
+
+        </div>
+
+
+        <!-- STATIONS -->
+
+        <div class="form-row">
+
+          <!-- SOURCE -->
+
+          <div class="form-group">
+
+            <label>
+              Source Station
+              <span>*</span>
+            </label>
+
+            <select
+              [(ngModel)]="trainForm.sourceStationId"
+            >
+
+              <option [ngValue]="null">
+                Select source station
+              </option>
+
+              <option
+                *ngFor="let station of stations"
+                [ngValue]="station.id"
+              >
+
+                {{ station.stationName }}
+                ({{ station.stationCode }})
+
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- DESTINATION -->
+
+          <div class="form-group">
+
+            <label>
+              Destination Station
+              <span>*</span>
+            </label>
+
+            <select
+              [(ngModel)]="trainForm.destinationStationId"
+            >
+
+              <option [ngValue]="null">
+                Select destination station
+              </option>
+
+              <option
+                *ngFor="let station of stations"
+                [ngValue]="station.id"
+              >
+
+                {{ station.stationName }}
+                ({{ station.stationCode }})
+
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- TIME -->
+
+        <div class="form-row">
+
+          <!-- DEPARTURE -->
+
+          <div class="form-group">
+
+            <label>
+              Departure Time
+              <span>*</span>
+            </label>
+
+            <input
+              type="datetime-local"
+              [(ngModel)]="trainForm.departureTime"
+            />
+
+          </div>
+
+
+          <!-- ARRIVAL -->
+
+          <div class="form-group">
+
+            <label>
+              Arrival Time
+              <span>*</span>
+            </label>
+
+            <input
+              type="datetime-local"
+              [(ngModel)]="trainForm.arrivalTime"
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- MODAL FOOTER -->
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeForm()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveTrain()"
+          [disabled]="saving"
+        >
+
+          <span
+            *ngIf="saving"
+            class="button-spinner"
+          ></span>
+
+          <i
+            *ngIf="!saving"
+            class="bi bi-check-lg"
+          ></i>
+
+          {{
+            saving
+              ? 'Saving...'
+              : (editMode ? 'Update Train' : 'Save Train')
+          }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

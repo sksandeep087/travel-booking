@@ -1,0 +1,580 @@
+<div class="confirmation-page">
+
+  <div class="container py-5">
+
+
+    <!-- =================================================
+         LOADING
+    ================================================== -->
+
+    <div *ngIf="loading" class="loading-box">
+
+      <div class="spinner-border text-primary">
+      </div>
+
+      <p>
+        Loading booking details...
+      </p>
+
+    </div>
+
+
+    <!-- =================================================
+         ERROR
+    ================================================== -->
+
+    <div *ngIf="!loading && errorMessage" class="alert alert-danger">
+
+      <i class="bi bi-exclamation-circle me-2"></i>
+
+      {{ errorMessage }}
+
+    </div>
+
+
+    <!-- =================================================
+         BOOKING DETAILS
+    ================================================= -->
+
+    <div *ngIf="!loading && booking" class="ticket-wrapper">
+
+
+      <!-- ===============================================
+           STATUS HEADER
+      ================================================ -->
+
+      <div class="success-header">
+
+        <div class="success-icon" [ngClass]="getStatusClass()">
+
+          <i class="bi" [ngClass]="getStatusIcon()">
+          </i>
+
+        </div>
+
+
+        <h1>
+          {{ getHeaderTitle() }}
+        </h1>
+
+
+        <p>
+          {{ getHeaderMessage() }}
+        </p>
+
+      </div>
+
+
+      <!-- ===============================================
+           TICKET CARD
+      ================================================ -->
+
+      <div class="ticket-card">
+
+
+        <!-- =============================================
+             TICKET HEADER
+        ============================================== -->
+
+        <div class="ticket-header">
+
+          <div>
+
+            <div class="ticket-label">
+              BOOKING REFERENCE
+            </div>
+
+            <div class="booking-number">
+              #{{ booking.bookingId }}
+            </div>
+
+            <small class="booking-number-text">
+              {{ booking.bookingNumber }}
+            </small>
+
+          </div>
+
+
+          <div class="confirmed-badge" [ngClass]="getStatusClass()">
+
+            <i class="bi me-1" [ngClass]="getStatusIcon()">
+            </i>
+
+            {{ booking.bookingStatus }}
+
+          </div>
+
+        </div>
+
+
+        <hr>
+
+
+        <!-- =============================================
+             TRAIN
+        ============================================== -->
+
+        <div class="train-section">
+
+          <div class="train-info">
+
+            <span>
+              TRAIN
+            </span>
+
+            <strong>
+              {{ booking.train.trainNumber }}
+            </strong>
+
+            <small>
+              {{ booking.train.trainName }}
+            </small>
+
+          </div>
+
+
+          <div class="route-arrow">
+
+            <i class="bi bi-arrow-right"></i>
+
+          </div>
+
+
+          <div class="train-info">
+
+            <span>
+              JOURNEY DATE
+            </span>
+
+            <strong>
+              {{ formatDate(booking.journeyDate) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- =============================================
+             JOURNEY
+        ============================================== -->
+
+        <div class="journey-section">
+
+
+          <div class="station">
+
+            <span>
+              FROM
+            </span>
+
+            <strong>
+              {{ booking.train.sourceStation.stationCode }}
+            </strong>
+
+            <small>
+              {{ booking.train.sourceStation.stationName }}
+            </small>
+
+          </div>
+
+
+          <div class="journey-line">
+
+            <i class="bi bi-train-front-fill"></i>
+
+          </div>
+
+
+          <div class="station">
+
+            <span>
+              TO
+            </span>
+
+            <strong>
+              {{ booking.train.destinationStation.stationCode }}
+            </strong>
+
+            <small>
+              {{ booking.train.destinationStation.stationName }}
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <hr>
+
+
+        <!-- =============================================
+             SEAT DETAILS
+        ============================================== -->
+
+        <div class="details-grid">
+
+
+          <div class="detail">
+
+            <span>
+              COACH
+            </span>
+
+            <strong>
+              {{ booking.seat.coach.coachNumber }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              SEAT
+            </span>
+
+            <strong>
+              {{ booking.seat.seatNumber }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              COACH TYPE
+            </span>
+
+            <strong>
+              {{ booking.seat.coach.coachType }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              BOOKING STATUS
+            </span>
+
+            <strong [ngClass]="getStatusClass()">
+
+              {{ booking.bookingStatus }}
+
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              PAYMENT STATUS
+            </span>
+
+            <strong [ngClass]="getPaymentStatusClass()">
+
+              {{ getPaymentStatus() }}
+
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              BOOKING DATE
+            </span>
+
+            <strong>
+              {{ formatDate(booking.bookingDate) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- =============================================
+             PAYMENT DETAILS
+        ============================================== -->
+
+        <div *ngIf="booking.payment" class="payment-section">
+
+          <div class="payment-section-header">
+
+            <div>
+
+              <span class="section-label">
+                PAYMENT DETAILS
+              </span>
+
+              <h3>
+                Payment Information
+              </h3>
+
+            </div>
+
+
+            <div class="payment-status-badge" [ngClass]="getPaymentStatusClass()">
+
+              <i class="bi" [ngClass]="{
+                  'bi-check-circle-fill':
+                    booking.payment.paymentStatus === 'SUCCESS',
+
+                  'bi-arrow-counterclockwise':
+                    booking.payment.paymentStatus === 'REFUNDED',
+
+                  'bi-x-circle-fill':
+                    booking.payment.paymentStatus === 'FAILED',
+
+                  'bi-clock-fill':
+                    booking.payment.paymentStatus === 'PENDING'
+                }">
+              </i>
+
+              {{ booking.payment.paymentStatus }}
+
+            </div>
+
+          </div>
+
+
+          <div class="payment-grid">
+
+
+            <!-- AMOUNT -->
+
+            <div class="payment-detail">
+
+              <span>
+                AMOUNT
+              </span>
+
+              <strong>
+                ₹{{ booking.payment.amount | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <!-- PAYMENT METHOD -->
+
+            <div class="payment-detail">
+
+              <span>
+                PAYMENT METHOD
+              </span>
+
+              <strong>
+                {{ booking.payment.paymentMethod ?? 'N/A' }}
+              </strong>
+
+            </div>
+
+
+            <!-- TRANSACTION -->
+
+            <div class="payment-detail">
+
+              <span>
+                TRANSACTION ID
+              </span>
+
+              <strong class="transaction-id">
+
+                {{ booking.payment.transactionId ?? 'N/A' }}
+
+              </strong>
+
+            </div>
+
+
+            <!-- RAZORPAY PAYMENT -->
+
+            <div class="payment-detail">
+
+              <span>
+                RAZORPAY PAYMENT ID
+              </span>
+
+              <strong class="transaction-id">
+
+                {{ booking.payment.razorpayPaymentId ?? 'N/A' }}
+
+              </strong>
+
+            </div>
+
+
+            <!-- REFUND -->
+
+            <div *ngIf="
+                booking.payment.paymentStatus ===
+                'REFUNDED'
+              " class="payment-detail">
+
+              <span>
+                REFUND ID
+              </span>
+
+              <strong class="transaction-id">
+
+                {{
+                booking.payment.razorpayRefundId ??
+                'N/A'
+                }}
+
+              </strong>
+
+            </div>
+
+
+            <!-- PAYMENT DATE -->
+
+            <div class="payment-detail">
+
+              <span>
+                PAYMENT DATE
+              </span>
+
+              <strong>
+                {{
+                formatDate(
+                booking.payment.updatedAt
+                )
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =============================================
+             QR CODE
+        ============================================== -->
+
+        <div *ngIf="qrCodeDataUrl" class="qr-section">
+
+          <div class="qr-content">
+
+
+            <div class="qr-text">
+
+              <span class="section-label">
+                TICKET VERIFICATION
+              </span>
+
+              <h3>
+                <i class="bi bi-qr-code"></i>
+
+                Booking QR Code
+              </h3>
+
+              <p>
+                Scan this QR code to view the
+                booking reference.
+              </p>
+
+              <strong>
+                {{ booking.bookingNumber }}
+              </strong>
+
+            </div>
+
+
+            <div class="qr-image">
+
+              <img [src]="qrCodeDataUrl" alt="Booking QR Code">
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- ===============================================
+           CANCELLED INFO
+      ================================================ -->
+
+      <div *ngIf="isCancelled()" class="cancelled-info">
+
+        <i class="bi bi-info-circle me-2"></i>
+
+        This booking has been cancelled.
+
+        <span *ngIf="
+            booking.payment?.paymentStatus ===
+            'REFUNDED'
+          ">
+
+          Your payment has been refunded.
+
+        </span>
+
+      </div>
+
+
+      <!-- ===============================================
+           PENDING INFO
+      ================================================ -->
+
+      <div *ngIf="isPending()" class="pending-info">
+
+        <i class="bi bi-clock me-2"></i>
+
+        Payment is pending for this booking.
+
+      </div>
+
+
+      <!-- ===============================================
+           ACTIONS
+      ================================================ -->
+
+      <div class="actions">
+
+
+        <div class="ticket-actions">
+
+          <button type="button" class="action-btn secondary" (click)="goHome()">
+            <i class="bi bi-house"></i>
+            <span>Back to Home</span>
+          </button>
+
+          <button type="button" class="action-btn secondary" (click)="printTicket()">
+            <i class="bi bi-printer"></i>
+            <span>Print / Save PDF</span>
+          </button>
+
+          <button type="button" class="action-btn pdf" (click)="downloadTicketPdf()">
+            <i class="bi bi-file-earmark-pdf"></i>
+            <span>Download Ticket PDF</span>
+          </button>
+
+          <button type="button" class="action-btn primary" (click)="goToMyBookings()">
+            <i class="bi bi-ticket-perforated"></i>
+            <span>My Bookings</span>
+          </button>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</div>

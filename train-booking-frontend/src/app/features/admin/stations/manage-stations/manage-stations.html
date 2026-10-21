@@ -1,0 +1,473 @@
+<div class="manage-stations-page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <button type="button" class="back-btn" (click)="goBack()">
+
+                ← Dashboard
+
+            </button>
+
+            <button type="button" class="quick-action" (click)="goToManageStations()">
+
+                <span class="quick-action-icon">
+                    🚉
+                </span>
+
+                <span>
+                    <strong>Manage Stations</strong>
+                    <small>Add, edit and delete stations</small>
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <button type="button" class="add-btn" (click)="openAddModal()">
+
+            + Add Station
+
+        </button>
+
+    </div>
+
+
+    <!-- ERROR -->
+    <div class="error-box" *ngIf="errorMessage">
+
+        <span>
+            {{ errorMessage }}
+        </span>
+
+        <button type="button" (click)="loadStations()">
+
+            Retry
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🚉
+            </div>
+
+            <div>
+
+                <span>Total Stations</span>
+
+                <strong>
+                    {{ totalStations }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🏙️
+            </div>
+
+            <div>
+
+                <span>Total Cities</span>
+
+                <strong>
+                    {{ totalCities }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🗺️
+            </div>
+
+            <div>
+
+                <span>Total States</span>
+
+                <strong>
+                    {{ totalStates }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+    <div class="toolbar">
+
+        <div class="search-box">
+
+            <span class="search-icon">
+                🔍
+            </span>
+
+            <input type="text" [(ngModel)]="searchText" (input)="onSearch()"
+                placeholder="Search by station code, name, city or state" />
+
+            <button *ngIf="searchText" type="button" class="clear-search" (click)="clearSearch()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="result-count">
+
+            Showing
+            <strong>
+                {{ filteredStations.length }}
+            </strong>
+            of
+            <strong>
+                {{ totalStations }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+    <div class="loading-container" *ngIf="loading">
+
+        <div class="spinner"></div>
+
+        <p>
+            Loading stations...
+        </p>
+
+    </div>
+
+
+    <!-- TABLE -->
+    <div class="table-card" *ngIf="!loading && filteredStations.length > 0">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Station</th>
+
+                        <th>Station Code</th>
+
+                        <th>City</th>
+
+                        <th>State</th>
+
+                        <th>Created</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr *ngFor="
+              let station of filteredStations;
+              let i = index;
+              trackBy: trackByStationId
+            ">
+
+                        <td>
+                            {{ i + 1 }}
+                        </td>
+
+
+                        <td>
+
+                            <div class="station-info">
+
+                                <div class="station-avatar">
+
+                                    {{ station.stationCode.charAt(0) || '?' }}
+
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ station.stationName }}
+                                    </strong>
+
+                                    <span>
+                                        ID: #{{ station.id }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="station-code">
+
+                                {{ station.stationCode }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            {{ station.city }}
+                        </td>
+
+
+                        <td>
+                            {{ station.state }}
+                        </td>
+
+
+                        <td>
+
+                            <span class="date">
+
+                                {{ station.createdAt
+                                | date:'dd MMM yyyy' }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button type="button" class="edit-btn" (click)="openEditModal(station)">
+
+                                    Edit
+
+                                </button>
+
+
+                                <button type="button" class="delete-btn" (click)="deleteStation(station)">
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- EMPTY -->
+    <div class="empty-state" *ngIf="
+      !loading &&
+      filteredStations.length === 0
+    ">
+
+        <div class="empty-icon">
+            🚉
+        </div>
+
+        <h3>
+            {{ searchText
+            ? 'No Stations Found'
+            : 'No Stations Available' }}
+        </h3>
+
+        <p>
+            {{ searchText
+            ? 'Try a different search term.'
+            : 'Add your first station to get started.' }}
+        </p>
+
+
+        <button *ngIf="!searchText" type="button" class="add-btn" (click)="openAddModal()">
+
+            + Add Station
+
+        </button>
+
+    </div>
+
+
+    <!-- ADD / EDIT MODAL -->
+    <div class="station-modal-overlay" *ngIf="showModal" (click)="closeModal()">
+
+        <div class="station-modal" (click)="$event.stopPropagation()">
+
+
+            <!-- MODAL HEADER -->
+            <div class="station-modal-header">
+
+                <div>
+
+                    <h2>
+                        {{ isEditMode
+                        ? 'Edit Station'
+                        : 'Add Station' }}
+                    </h2>
+
+                    <p>
+                        {{ isEditMode
+                        ? 'Update station information'
+                        : 'Enter station information' }}
+                    </p>
+
+                </div>
+
+
+                <button type="button" class="close-btn" [disabled]="saving" (click)="closeModal()">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <!-- FORM -->
+            <div class="station-modal-body">
+
+
+                <!-- STATION CODE -->
+                <div class="form-group">
+
+                    <label>
+                        Station Code
+                        <span>*</span>
+                    </label>
+
+                    <input type="text" [(ngModel)]="stationForm.stationCode" maxlength="10" placeholder="e.g. NDLS"
+                        style="text-transform: uppercase;" />
+
+                    <small>
+                        Maximum 10 characters
+                    </small>
+
+                </div>
+
+
+                <!-- STATION NAME -->
+                <div class="form-group">
+
+                    <label>
+                        Station Name
+                        <span>*</span>
+                    </label>
+
+                    <input type="text" [(ngModel)]="stationForm.stationName"
+                        placeholder="e.g. New Delhi Railway Station" />
+
+                </div>
+
+
+                <!-- CITY -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            City
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" [(ngModel)]="stationForm.city" placeholder="e.g. New Delhi" />
+
+                    </div>
+
+
+                    <!-- STATE -->
+                    <div class="form-group">
+
+                        <label>
+                            State
+                            <span>*</span>
+                        </label>
+
+                        <input type="text" [(ngModel)]="stationForm.state" placeholder="e.g. Delhi" />
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- MODAL FOOTER -->
+            <div class="station-modal-footer">
+
+                <button type="button" class="cancel-btn" [disabled]="saving" (click)="closeModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button type="button" class="save-btn" [disabled]="saving" (click)="saveStation()">
+
+                    <span *ngIf="!saving">
+
+                        {{ isEditMode
+                        ? 'Update Station'
+                        : 'Add Station' }}
+
+                    </span>
+
+
+                    <span *ngIf="saving">
+
+                        Saving...
+
+                    </span>
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>

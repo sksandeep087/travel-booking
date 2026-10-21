@@ -1,0 +1,598 @@
+<div class="booking-details-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <button
+        type="button"
+        class="back-btn"
+        (click)="goBack()">
+
+        ← Back to Bookings
+
+      </button>
+
+      <div>
+        <h1>Booking Details</h1>
+
+        <p>
+          View complete booking information
+        </p>
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="refresh()">
+
+      ↻ Refresh
+
+    </button>
+
+  </div>
+
+
+  <!-- ERROR -->
+  <div
+    class="error-box"
+    *ngIf="errorMessage">
+
+    <strong>Error</strong>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="loadBooking()">
+
+      Retry
+
+    </button>
+
+  </div>
+
+
+  <!-- LOADING -->
+  <div
+    class="loading-container"
+    *ngIf="loading">
+
+    <div class="spinner"></div>
+
+    <p>
+      Loading booking details...
+    </p>
+
+  </div>
+
+
+  <!-- CONTENT -->
+  <ng-container *ngIf="!loading && booking">
+
+    <!-- BOOKING SUMMARY -->
+    <div class="summary-card">
+
+      <div class="summary-main">
+
+        <div class="booking-icon">
+          🎫
+        </div>
+
+        <div>
+
+          <span class="small-label">
+            Booking Number
+          </span>
+
+          <h2>
+            {{ booking.bookingNumber }}
+          </h2>
+
+          <span class="booking-id">
+            Booking ID: #{{ booking.bookingId }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-status">
+
+        <span class="small-label">
+          Booking Status
+        </span>
+
+        <span
+          class="status-badge"
+          [class]="getBookingStatusClass(booking.bookingStatus)">
+
+          {{ booking.bookingStatus }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- JOURNEY -->
+    <section class="details-section">
+
+      <div class="section-title">
+
+        <span class="section-icon">
+          🚆
+        </span>
+
+        <div>
+          <h2>Journey Details</h2>
+          <p>Train and journey information</p>
+        </div>
+
+      </div>
+
+
+      <div class="journey-card">
+
+        <div class="train-info">
+
+          <div class="train-number">
+            {{ booking.trainNumber }}
+          </div>
+
+          <div class="train-name">
+            {{ booking.trainName }}
+          </div>
+
+        </div>
+
+
+        <div class="route">
+
+          <div class="station">
+
+            <span class="station-code">
+              {{ booking.sourceStation }}
+            </span>
+
+            <span class="station-label">
+              Source
+            </span>
+
+          </div>
+
+
+          <div class="route-line">
+
+            <span>→</span>
+
+          </div>
+
+
+          <div class="station">
+
+            <span class="station-code">
+              {{ booking.destinationStation }}
+            </span>
+
+            <span class="station-label">
+              Destination
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="journey-date">
+
+          <span class="label">
+            Journey Date
+          </span>
+
+          <strong>
+            {{ formatDate(booking.journeyDate) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PASSENGER -->
+    <section class="details-section">
+
+      <div class="section-title">
+
+        <span class="section-icon">
+          👤
+        </span>
+
+        <div>
+          <h2>Passenger / User Details</h2>
+          <p>User who created this booking</p>
+        </div>
+
+      </div>
+
+
+      <div class="info-grid">
+
+        <div class="info-item">
+
+          <span class="label">
+            User ID
+          </span>
+
+          <strong>
+            #{{ booking.userId }}
+          </strong>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <span class="label">
+            Name
+          </span>
+
+          <strong>
+            {{ booking.userName }}
+          </strong>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <span class="label">
+            Email
+          </span>
+
+          <strong>
+            {{ booking.userEmail }}
+          </strong>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <span class="label">
+            Mobile
+          </span>
+
+          <strong>
+            {{ booking.userMobile }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SEAT -->
+    <section class="details-section">
+
+      <div class="section-title">
+
+        <span class="section-icon">
+          💺
+        </span>
+
+        <div>
+          <h2>Seat Details</h2>
+          <p>Coach and seat information</p>
+        </div>
+
+      </div>
+
+
+      <div class="seat-card">
+
+        <div class="seat-box">
+
+          <span class="label">
+            Coach
+          </span>
+
+          <strong>
+            {{ booking.coachNumber }}
+          </strong>
+
+        </div>
+
+
+        <div class="seat-box">
+
+          <span class="label">
+            Coach Type
+          </span>
+
+          <strong>
+            {{ booking.coachType }}
+          </strong>
+
+        </div>
+
+
+        <div class="seat-box highlight">
+
+          <span class="label">
+            Seat Number
+          </span>
+
+          <strong>
+            {{ booking.seatNumber }}
+          </strong>
+
+        </div>
+
+
+        <div class="seat-box">
+
+          <span class="label">
+            Seat ID
+          </span>
+
+          <strong>
+            #{{ booking.seatId }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PAYMENT -->
+    <section class="details-section">
+
+      <div class="section-title">
+
+        <span class="section-icon">
+          💳
+        </span>
+
+        <div>
+          <h2>Payment Details</h2>
+          <p>Payment and Razorpay information</p>
+        </div>
+
+      </div>
+
+
+      <div class="payment-card">
+
+        <div class="payment-row">
+
+          <span>
+            Payment ID
+          </span>
+
+          <strong>
+            {{ booking.paymentId ?? '-' }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Amount
+          </span>
+
+          <strong class="amount">
+            {{ formatAmount(booking.paymentAmount) }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Payment Method
+          </span>
+
+          <strong>
+            {{ booking.paymentMethod ?? '-' }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Payment Status
+          </span>
+
+          <span
+            class="status-badge"
+            [class]="getPaymentStatusClass(booking.paymentStatus)">
+
+            {{ booking.paymentStatus ?? 'NOT PAID' }}
+
+          </span>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Transaction ID
+          </span>
+
+          <strong class="break-text">
+            {{ booking.transactionId ?? '-' }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Razorpay Order ID
+          </span>
+
+          <strong class="break-text">
+            {{ booking.razorpayOrderId ?? '-' }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Razorpay Payment ID
+          </span>
+
+          <strong class="break-text">
+            {{ booking.razorpayPaymentId ?? '-' }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Razorpay Refund ID
+          </span>
+
+          <strong class="break-text">
+            {{ booking.razorpayRefundId ?? '-' }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Payment Created
+          </span>
+
+          <strong>
+            {{ formatDateTime(booking.paymentCreatedAt) }}
+          </strong>
+
+        </div>
+
+
+        <div class="payment-row">
+
+          <span>
+            Payment Updated
+          </span>
+
+          <strong>
+            {{ formatDateTime(booking.paymentUpdatedAt) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- BOOKING TIMELINE -->
+    <section class="details-section">
+
+      <div class="section-title">
+
+        <span class="section-icon">
+          🕒
+        </span>
+
+        <div>
+          <h2>Booking Information</h2>
+          <p>Booking timestamps</p>
+        </div>
+
+      </div>
+
+
+      <div class="info-grid">
+
+        <div class="info-item">
+
+          <span class="label">
+            Booking Date
+          </span>
+
+          <strong>
+            {{ formatDateTime(booking.bookingDate) }}
+          </strong>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <span class="label">
+            Journey Date
+          </span>
+
+          <strong>
+            {{ formatDate(booking.journeyDate) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+  </ng-container>
+
+
+  <!-- NO DATA -->
+  <div
+    class="empty-state"
+    *ngIf="!loading && !booking && !errorMessage">
+
+    <div class="empty-icon">
+      📋
+    </div>
+
+    <h3>
+      Booking Not Found
+    </h3>
+
+    <p>
+      No booking details are available.
+    </p>
+
+    <button
+      type="button"
+      class="back-main-btn"
+      (click)="goBack()">
+
+      Back to Bookings
+
+    </button>
+
+  </div>
+
+</div>

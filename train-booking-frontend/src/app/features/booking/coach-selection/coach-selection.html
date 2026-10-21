@@ -1,0 +1,161 @@
+<div class="coach-page">
+
+  <div class="container py-5">
+
+    <div class="page-header">
+
+      <button type="button" class="back-btn" (click)="goBack()">
+
+        <i class="bi bi-arrow-left"></i>
+        Back to Trains
+
+      </button>
+
+      <span class="page-label">
+        STEP 1 OF 3
+      </span>
+
+      <h1>
+        Select Your Coach
+      </h1>
+
+      <p>
+        Choose your preferred coach for your journey.
+      </p>
+
+    </div>
+
+
+    <!-- Journey Information -->
+
+    <div class="journey-card">
+
+      <div class="journey-item">
+
+        <span>Train</span>
+
+        <strong>
+          #{{ trainId }}
+        </strong>
+
+      </div>
+
+      <div class="journey-divider">
+
+        <i class="bi bi-arrow-right"></i>
+
+      </div>
+
+      <div class="journey-item">
+
+        <span>Journey Date</span>
+
+        <strong>
+          {{ journeyDate | date:'dd MMM yyyy' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Error -->
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+
+      <i class="bi bi-exclamation-circle me-2"></i>
+
+      {{ errorMessage }}
+
+    </div>
+
+
+    <!-- Loading -->
+
+    <div *ngIf="loadingCoaches" class="loading-box text-center py-5">
+
+      <div class="spinner-border text-primary">
+      </div>
+
+      <p class="mt-3">
+        Loading coaches...
+      </p>
+
+    </div>
+
+
+    <!-- Coach List -->
+
+    <div class="coach-grid" *ngIf="!loadingCoaches && coaches.length > 0">
+
+      <div class="coach-card" *ngFor="let coach of coaches">
+
+
+        <!-- Icon -->
+
+        <div class="coach-icon">
+
+          <i class="bi" [ngClass]="getCoachIcon(coach.coachType)">
+          </i>
+
+        </div>
+
+
+        <!-- Information -->
+
+        <div class="coach-content">
+
+          <span class="coach-code">
+
+            {{ coach.coachType }}
+
+          </span>
+
+          <h3>
+
+            {{ getCoachTitle(coach.coachType) }}
+
+          </h3>
+
+          <p>
+
+            Coach {{ coach.coachNumber }}
+
+            • {{ coach.totalSeats }} Seats
+
+          </p>
+
+        </div>
+
+
+        <!-- Select -->
+
+        <button type="button" class="select-btn" (click)="selectCoach(coach)">
+
+          Select
+
+          <i class="bi bi-arrow-right"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <div *ngIf="!loadingCoaches && !errorMessage && coaches.length === 0" class="no-coach-box">
+
+      <div class="no-coach-icon">
+        <i class="bi bi-train-front"></i>
+      </div>
+
+      <h3>No Coaches Available</h3>
+
+      <p>
+        No coaches are available for this train.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>

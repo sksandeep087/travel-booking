@@ -1,0 +1,303 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+body {
+  background: #f5f7fb;
+  color: #212529;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* =========================================================
+   SWEET ALERT - CANCEL BOOKING
+========================================================= */
+
+.cancel-booking-popup {
+  border-radius: 18px !important;
+
+  padding: 28px !important;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif !important;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.cancel-booking-title {
+  margin-bottom: 5px !important;
+
+  color: #10233f !important;
+
+  font-size: 24px !important;
+
+  font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   CANCEL BOOKING CONTENT
+========================================================= */
+
+.cancel-booking-content {
+  width: 100%;
+
+  text-align: left;
+
+  margin-top: 8px;
+}
+
+
+/* =========================================================
+   TRAIN BOX
+========================================================= */
+
+.cancel-train-box {
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  border: 1px solid #e5ebf3;
+
+  border-radius: 11px;
+
+  background: #f6f8fc;
+}
+
+.cancel-label {
+  margin-bottom: 5px;
+
+  color: #8190a5;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+.cancel-train-name {
+  color: #10233f;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   JOURNEY DETAILS
+========================================================= */
+
+.cancel-details-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+.cancel-detail {
+  min-width: 0;
+
+  padding: 12px;
+
+  border: 1px solid #e9eef5;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+.cancel-value {
+  color: #10233f;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   REFUND INFO
+========================================================= */
+
+.cancel-refund-info {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #ffe69c;
+
+  border-radius: 9px;
+
+  background: #fff8e1;
+
+  color: #664d03;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.cancel-refund-info i {
+  flex-shrink: 0;
+
+  margin-top: 2px;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   CONFIRM BUTTON
+========================================================= */
+
+.cancel-confirm-btn {
+  min-width: 170px !important;
+
+  min-height: 42px !important;
+
+  border-radius: 9px !important;
+
+  font-size: 13px !important;
+
+  font-weight: 600 !important;
+}
+
+
+/* =========================================================
+   KEEP BOOKING BUTTON
+========================================================= */
+
+.cancel-keep-btn {
+  min-width: 125px !important;
+
+  min-height: 42px !important;
+
+  border-radius: 9px !important;
+
+  font-size: 13px !important;
+
+  font-weight: 600 !important;
+}
+
+
+/* =========================================================
+   SUCCESS POPUP
+========================================================= */
+
+.swal2-popup.swal2-icon-success {
+  border-radius: 18px;
+}
+
+.swal2-popup.swal2-icon-success .swal2-title {
+  color: #10233f;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   ERROR POPUP
+========================================================= */
+
+.swal2-popup.swal2-icon-error {
+  border-radius: 18px;
+}
+
+.swal2-popup.swal2-icon-error .swal2-title {
+  color: #10233f;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   WARNING POPUP
+========================================================= */
+
+.swal2-popup.swal2-icon-warning {
+  border-radius: 18px;
+}
+
+.swal2-popup.swal2-icon-warning .swal2-title {
+  color: #10233f;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+  .cancel-booking-popup {
+    width: calc(100% - 24px) !important;
+
+    padding: 22px !important;
+
+    border-radius: 15px !important;
+  }
+
+  .cancel-booking-title {
+    font-size: 21px !important;
+  }
+
+  .cancel-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cancel-confirm-btn,
+  .cancel-keep-btn {
+    min-width: 100px !important;
+
+    font-size: 12px !important;
+  }
+
+}

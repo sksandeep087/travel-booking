@@ -1,0 +1,223 @@
+<div class="seat-selection">
+
+    <!-- HEADER -->
+
+    <div class="seat-header">
+
+        <div>
+
+            <h2>Select Your Seat</h2>
+
+            <p>
+                Choose an available seat for your journey
+            </p>
+
+        </div>
+
+        <button type="button" class="refresh-btn" (click)="refresh()" [disabled]="loading">
+
+            ↻ Refresh
+
+        </button>
+
+    </div>
+
+
+    <!-- LEGEND -->
+
+    <div class="seat-legend">
+
+        <div class="legend-item">
+
+            <span class="legend-box available"></span>
+
+            <span>Available</span>
+
+        </div>
+
+
+        <div class="legend-item">
+
+            <span class="legend-box selected"></span>
+
+            <span>Selected</span>
+
+        </div>
+
+
+        <div class="legend-item">
+
+            <span class="legend-box booked"></span>
+
+            <span>Booked</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="seat-summary" *ngIf="!loading && seats.length > 0">
+
+        <span>
+            Total: <strong>{{ seats.length }}</strong>
+        </span>
+
+        <span>
+            Available: <strong>{{ availableSeats }}</strong>
+        </span>
+
+        <span>
+            Booked: <strong>{{ bookedSeats }}</strong>
+        </span>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div class="seat-loading" *ngIf="loading">
+
+        <div class="spinner"></div>
+
+        <p>Loading seat availability...</p>
+
+    </div>
+
+
+    <!-- ERROR -->
+
+    <div class="seat-error" *ngIf="!loading && errorMessage">
+
+        <div>⚠</div>
+
+        <p>{{ errorMessage }}</p>
+
+        <button type="button" (click)="refresh()">
+
+            Try Again
+
+        </button>
+
+    </div>
+
+
+    <!-- EMPTY -->
+
+    <div class="seat-empty" *ngIf="
+      !loading &&
+      !errorMessage &&
+      seats.length === 0 &&
+      coachId
+    ">
+
+        <div class="empty-icon">
+            💺
+        </div>
+
+        <h3>No Seats Found</h3>
+
+        <p>
+            No seats are configured for this coach.
+        </p>
+
+    </div>
+
+
+    <!-- NO SELECTION -->
+
+    <div class="seat-empty" *ngIf="
+      !loading &&
+      !errorMessage &&
+      !coachId
+    ">
+
+        <div class="empty-icon">
+            🚆
+        </div>
+
+        <h3>Select a Coach</h3>
+
+        <p>
+            Please select a coach to view available seats.
+        </p>
+
+    </div>
+
+
+    <!-- SEAT LAYOUT -->
+
+    <div class="coach-layout" *ngIf="
+      !loading &&
+      !errorMessage &&
+      seats.length > 0
+    ">
+
+        <div class="coach-label">
+
+            <span class="engine-icon">
+                🚆
+            </span>
+
+            <span>
+                Coach
+            </span>
+
+        </div>
+
+
+        <div class="seat-grid">
+
+            <button type="button" *ngFor="let seat of seats" class="seat" [class.booked]="seat.booked"
+                [class.selected]="isSelected(seat)" [class.available]="!seat.booked" [disabled]="seat.booked"
+                (click)="selectSeat(seat)">
+
+                <span class="seat-number">
+                    {{ seat.seatNumber }}
+                </span>
+
+                <span class="seat-type">
+                    {{ seat.seatType }}
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- SELECTED SEAT -->
+
+        <div class="selected-seat" *ngIf="selectedSeatId">
+
+            <span class="check-icon">
+                ✓
+            </span>
+
+            <div>
+
+                <strong>
+                    Seat Selected
+                </strong>
+
+                <span>
+                    {{
+                    seats.find(
+                    s => s.seatId === selectedSeatId
+                    )?.seatNumber
+                    }}
+                    -
+                    {{
+                    seats.find(
+                    s => s.seatId === selectedSeatId
+                    )?.seatType
+                    }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,734 @@
+<div class="home-page">
+
+
+  <!-- =====================================================
+       HERO SECTION
+  ====================================================== -->
+
+  <section class="hero-section">
+
+    <div class="hero-overlay">
+
+      <div class="container">
+
+
+        <!-- =================================================
+             HERO CONTENT
+        ================================================== -->
+
+        <div class="hero-content">
+
+          <span class="hero-badge">
+
+            <i class="bi bi-train-front-fill"></i>
+
+            Smart Train Booking
+
+          </span>
+
+
+          <h1>
+
+            Book Your Train Journey
+
+            <span>
+              With Ease
+            </span>
+
+          </h1>
+
+
+          <p>
+
+            Search trains, choose your seat and book your journey
+            quickly and securely.
+
+          </p>
+
+        </div>
+
+
+        <!-- =================================================
+             SEARCH CARD
+        ================================================== -->
+
+        <div class="search-card">
+
+
+          <!-- =================================================
+               SEARCH TITLE
+          ================================================== -->
+
+          <div class="search-title">
+
+            <div class="title-icon">
+
+              <i class="bi bi-search"></i>
+
+            </div>
+
+
+            <div>
+
+              <h3>
+                Search Trains
+              </h3>
+
+              <p>
+                Find the best train for your journey
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               ERROR MESSAGE
+          ================================================== -->
+
+          <div
+            *ngIf="errorMessage"
+            class="alert alert-danger search-error">
+
+            <i
+              class="bi bi-exclamation-circle me-2">
+            </i>
+
+            {{ errorMessage }}
+
+          </div>
+
+
+          <!-- =================================================
+               SEARCH FORM
+          ================================================== -->
+
+          <div class="row g-3 align-items-end">
+
+
+            <!-- =================================================
+                 FROM
+            ================================================== -->
+
+            <div class="col-lg-3 col-md-6">
+
+              <label
+                for="sourceStation"
+                class="form-label">
+
+                From
+
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i class="bi bi-geo-alt"></i>
+
+
+                <select
+                  id="sourceStation"
+                  class="form-select"
+                  [(ngModel)]="sourceStationId">
+
+
+                  <!-- Placeholder -->
+
+                  <option
+                    [ngValue]="null">
+
+                    {{
+                      loadingStations
+                        ? 'Loading stations...'
+                        : 'Select departure station'
+                    }}
+
+                  </option>
+
+
+                  <!-- Stations -->
+
+                  <option
+                    *ngFor="let station of stations"
+                    [ngValue]="station.id">
+
+                    {{ station.stationName }}
+
+                    ({{ station.stationCode }})
+
+                  </option>
+
+
+                </select>
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SWAP BUTTON
+            ================================================== -->
+
+            <div
+              class="col-lg-1 col-md-6 swap-column">
+
+              <button
+                type="button"
+                class="swap-btn"
+                title="Swap stations"
+                (click)="swapStations()"
+                [disabled]="loadingStations">
+
+                <i
+                  class="bi bi-arrow-left-right">
+                </i>
+
+              </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 TO
+            ================================================== -->
+
+            <div class="col-lg-3 col-md-6">
+
+              <label
+                for="destinationStation"
+                class="form-label">
+
+                To
+
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i
+                  class="bi bi-geo-alt-fill">
+                </i>
+
+
+                <select
+                  id="destinationStation"
+                  class="form-select"
+                  [(ngModel)]="destinationStationId">
+
+
+                  <!-- Placeholder -->
+
+                  <option
+                    [ngValue]="null">
+
+                    {{
+                      loadingStations
+                        ? 'Loading stations...'
+                        : 'Select destination station'
+                    }}
+
+                  </option>
+
+
+                  <!-- Stations -->
+
+                  <option
+                    *ngFor="let station of stations"
+                    [ngValue]="station.id">
+
+                    {{ station.stationName }}
+
+                    ({{ station.stationCode }})
+
+                  </option>
+
+
+                </select>
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 JOURNEY DATE
+            ================================================== -->
+
+            <div class="col-lg-2 col-md-6">
+
+              <label
+                for="journeyDate"
+                class="form-label">
+
+                Journey Date
+
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i
+                  class="bi bi-calendar-event">
+                </i>
+
+
+                <input
+                  id="journeyDate"
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="journeyDate"
+                  [min]="minJourneyDate">
+
+              </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEARCH BUTTON
+            ================================================== -->
+
+            <div class="col-lg-3 col-md-6">
+
+  <button
+    type="button"
+    class="btn btn-primary search-btn w-100"
+    (click)="searchTrains()"
+    [disabled]="searchingTrains">
+
+    <span
+      *ngIf="searchingTrains"
+      class="spinner-border spinner-border-sm me-2">
+    </span>
+
+    <i
+      *ngIf="!searchingTrains"
+      class="bi bi-search me-2">
+    </i>
+
+    <span>
+      {{
+        searchingTrains
+          ? 'Searching...'
+          : 'Search Trains'
+      }}
+    </span>
+
+  </button>
+
+</div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       TRAIN RESULTS
+  ====================================================== -->
+
+  <section
+    class="train-results-section"
+    *ngIf="trains.length > 0">
+
+
+    <div class="container">
+
+
+      <!-- =================================================
+           RESULT HEADER
+      ================================================== -->
+
+      <div class="results-header">
+
+
+        <div>
+
+          <span class="results-label">
+
+            AVAILABLE TRAINS
+
+          </span>
+
+
+          <h2>
+
+            {{ getStationName(sourceStationId!) }}
+
+            <i
+              class="bi bi-arrow-right mx-2">
+            </i>
+
+            {{ getStationName(destinationStationId!) }}
+
+          </h2>
+
+        </div>
+
+
+        <!-- Date -->
+
+        <div class="journey-date">
+
+          <i
+            class="bi bi-calendar3">
+          </i>
+
+          {{ journeyDate | date:'dd MMM yyyy' }}
+
+        </div>
+
+
+      </div>
+
+
+      <!-- =================================================
+           TRAIN CARD
+      ================================================== -->
+
+      <div
+        class="train-card"
+        *ngFor="let train of trains">
+
+
+        <!-- =================================================
+             TRAIN MAIN
+        ================================================== -->
+
+        <div class="train-main">
+
+
+          <!-- =================================================
+               TRAIN INFO
+          ================================================== -->
+
+          <div class="train-info">
+
+
+            <div class="train-icon">
+
+              <i
+                class="bi bi-train-front-fill">
+              </i>
+
+            </div>
+
+
+            <div>
+
+              <h3>
+
+                {{ train.trainName }}
+
+              </h3>
+
+
+              <span class="train-number">
+
+                Train No.
+                {{ train.trainNumber }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- =================================================
+               ROUTE
+          ================================================== -->
+
+          <div class="route-info">
+
+
+            <!-- Departure -->
+
+            <div class="station-time">
+
+              <strong>
+
+                {{ formatTime(train.departureTime) }}
+
+              </strong>
+
+
+              <span>
+
+                {{ train.sourceStation.stationCode }}
+
+              </span>
+
+            </div>
+
+
+            <!-- Route -->
+
+            <div class="route-line">
+
+              <span></span>
+
+              <i
+                class="bi bi-train-front">
+              </i>
+
+              <span></span>
+
+            </div>
+
+
+            <!-- Arrival -->
+
+            <div class="station-time">
+
+              <strong>
+
+                {{ formatTime(train.arrivalTime) }}
+
+              </strong>
+
+
+              <span>
+
+                {{ train.destinationStation.stationCode }}
+
+              </span>
+
+            </div>
+
+
+          </div>
+
+
+          <!-- =================================================
+               SELECT TRAIN
+          ================================================== -->
+
+          <div class="train-action">
+  <button
+    type="button"
+    class="select-train-btn"
+    (click)="selectTrain(train)"
+  >
+    Select Train
+    <i class="bi bi-arrow-right ms-2"></i>
+  </button>
+</div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             TRAIN FOOTER
+        ================================================== -->
+
+        <div class="train-footer">
+
+
+          <!-- Source -->
+
+          <span>
+
+            <i
+              class="bi bi-geo-alt me-1">
+            </i>
+
+            {{ train.sourceStation.stationName }}
+
+          </span>
+
+
+          <!-- Arrow -->
+
+          <span class="route-arrow">
+
+            <i
+              class="bi bi-arrow-right">
+            </i>
+
+          </span>
+
+
+          <!-- Destination -->
+
+          <span>
+
+            <i
+              class="bi bi-geo-alt-fill me-1">
+            </i>
+
+            {{ train.destinationStation.stationName }}
+
+          </span>
+
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FEATURES
+  ====================================================== -->
+
+  <section class="features-section">
+
+    <div class="container">
+
+
+      <!-- =================================================
+           HEADING
+      ================================================== -->
+
+      <div class="section-heading">
+
+        <span>
+          WHY CHOOSE US
+        </span>
+
+
+        <h2>
+          Everything You Need For Your Journey
+        </h2>
+
+      </div>
+
+
+      <!-- =================================================
+           FEATURE CARDS
+      ================================================== -->
+
+      <div class="row g-4">
+
+
+        <!-- =================================================
+             FEATURE 1
+        ================================================== -->
+
+        <div class="col-lg-4 col-md-6">
+
+          <div class="feature-card">
+
+
+            <div class="feature-icon">
+
+              <i
+                class="bi bi-search">
+              </i>
+
+            </div>
+
+
+            <h4>
+              Easy Train Search
+            </h4>
+
+
+            <p>
+
+              Search available trains between your source
+              and destination in seconds.
+
+            </p>
+
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FEATURE 2
+        ================================================== -->
+
+        <div class="col-lg-4 col-md-6">
+
+          <div class="feature-card">
+
+
+            <div class="feature-icon">
+
+              <i
+                class="bi bi-grid-3x3-gap">
+              </i>
+
+            </div>
+
+
+            <h4>
+              Choose Your Seat
+            </h4>
+
+
+            <p>
+
+              Select your preferred coach and available seat
+              before completing your booking.
+
+            </p>
+
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FEATURE 3
+        ================================================== -->
+
+        <div class="col-lg-4 col-md-6">
+
+          <div class="feature-card">
+
+
+            <div class="feature-icon">
+
+              <i
+                class="bi bi-shield-check">
+              </i>
+
+            </div>
+
+
+            <h4>
+              Secure Payment
+            </h4>
+
+
+            <p>
+
+              Complete your payment securely using
+              Razorpay.
+
+            </p>
+
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+</div>

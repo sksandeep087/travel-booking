@@ -1,0 +1,606 @@
+<div class="manage-coaches-page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <button type="button" class="back-btn" (click)="goBack()">
+
+                ← Dashboard
+
+            </button>
+
+            <div>
+
+                <h1>Manage Coaches</h1>
+
+                <p>
+                    Add, edit and manage train coaches
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button type="button" class="add-btn" [disabled]="selectedTrainId === null" (click)="openAddModal()">
+
+            + Add Coach
+
+        </button>
+
+    </div>
+
+
+    <!-- ERROR -->
+    <div class="error-box" *ngIf="errorMessage">
+
+        <span>
+            {{ errorMessage }}
+        </span>
+
+        <button type="button" (click)="selectedTrainId !== null
+        ? loadCoaches()
+        : loadTrains()">
+
+            Retry
+
+        </button>
+
+    </div>
+
+
+    <!-- TRAIN SELECT -->
+    <div class="train-selector-card">
+
+        <div class="selector-header">
+
+            <div class="selector-icon">
+                🚆
+            </div>
+
+            <div>
+
+                <h2>Select Train</h2>
+
+                <p>
+                    Select a train to view and manage its coaches
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="select-wrapper">
+
+            <select [(ngModel)]="selectedTrainId" (ngModelChange)="onTrainChange()">
+
+                <option [ngValue]="null">
+                    -- Select Train --
+                </option>
+
+                <option *ngFor="let train of trains" [ngValue]="train.id">
+
+                    {{ train.trainNumber }}
+                    - {{ train.trainName }}
+
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- SELECTED TRAIN -->
+        <div class="selected-train" *ngIf="selectedTrain">
+
+            <div>
+
+                <strong>
+                    {{ selectedTrain.trainNumber }}
+                </strong>
+
+                <span>
+                    {{ selectedTrain.trainName }}
+                </span>
+
+            </div>
+
+            <div class="route">
+
+                {{ selectedTrain.sourceStationCode }}
+
+                →
+
+                {{ selectedTrain.destinationStationCode }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+    <div class="summary-grid" *ngIf="selectedTrainId !== null">
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🚃
+            </div>
+
+            <div>
+
+                <span>
+                    Total Coaches
+                </span>
+
+                <strong>
+                    {{ totalCoaches }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                💺
+            </div>
+
+            <div>
+
+                <span>
+                    Total Seats
+                </span>
+
+                <strong>
+                    {{ totalSeats }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🚆
+            </div>
+
+            <div>
+
+                <span>
+                    Selected Train
+                </span>
+
+                <strong>
+                    {{ selectedTrain?.trainNumber }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+    <div class="toolbar" *ngIf="selectedTrainId !== null">
+
+        <div class="search-box">
+
+            <span class="search-icon">
+                🔍
+            </span>
+
+            <input type="text" [(ngModel)]="searchText" (input)="onSearch()"
+                placeholder="Search coach number or type" />
+
+            <button *ngIf="searchText" type="button" class="clear-search" (click)="clearSearch()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="result-count">
+
+            Showing
+            <strong>
+                {{ filteredCoaches.length }}
+            </strong>
+            of
+            <strong>
+                {{ totalCoaches }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+    <div class="loading-container" *ngIf="loadingCoaches">
+
+        <div class="spinner"></div>
+
+        <p>
+            Loading coaches...
+        </p>
+
+    </div>
+
+
+    <!-- TABLE -->
+    <div class="table-card" *ngIf="
+      !loadingCoaches &&
+      selectedTrainId !== null &&
+      filteredCoaches.length > 0
+    ">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Coach Number</th>
+
+                        <th>Coach Type</th>
+
+                        <th>Total Seats</th>
+
+                        <th>Train</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr *ngFor="
+              let coach of filteredCoaches;
+              let i = index;
+              trackBy: trackByCoachId
+            ">
+
+                        <td>
+                            {{ i + 1 }}
+                        </td>
+
+
+                        <td>
+
+                            <div class="coach-info">
+
+                                <div class="coach-icon">
+                                    🚃
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ coach.coachNumber }}
+                                    </strong>
+
+                                    <span>
+                                        ID: #{{ coach.id }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="coach-type">
+
+                                {{ coach.coachType }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ coach.totalSeats }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="train-info" *ngIf="coach.train">
+
+                                <strong>
+                                    {{ coach.train.trainNumber }}
+                                </strong>
+
+                                <span>
+                                    {{ coach.train.trainName }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button type="button" class="edit-btn" (click)="openEditModal(coach)">
+
+                                    Edit
+
+                                </button>
+
+
+                                <button type="button" class="delete-btn" (click)="deleteCoach(coach)">
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- NO TRAIN -->
+    <div class="empty-state" *ngIf="
+      !loadingTrains &&
+      trains.length === 0
+    ">
+
+        <div class="empty-icon">
+            🚆
+        </div>
+
+        <h3>
+            No Trains Available
+        </h3>
+
+        <p>
+            Please add a train before creating coaches.
+        </p>
+
+    </div>
+
+
+    <!-- SELECT TRAIN -->
+    <div class="empty-state" *ngIf="
+      !loadingCoaches &&
+      trains.length > 0 &&
+      selectedTrainId === null
+    ">
+
+        <div class="empty-icon">
+            🚆
+        </div>
+
+        <h3>
+            Select a Train
+        </h3>
+
+        <p>
+            Select a train above to view its coaches.
+        </p>
+
+    </div>
+
+
+    <!-- NO COACH -->
+    <div class="empty-state" *ngIf="
+      !loadingCoaches &&
+      selectedTrainId !== null &&
+      filteredCoaches.length === 0
+    ">
+
+        <div class="empty-icon">
+            🚃
+        </div>
+
+        <h3>
+            {{ searchText
+            ? 'No Coaches Found'
+            : 'No Coaches Available' }}
+        </h3>
+
+        <p>
+            {{ searchText
+            ? 'Try a different search term.'
+            : 'Add the first coach for this train.' }}
+        </p>
+
+
+        <button *ngIf="!searchText" type="button" class="add-btn" (click)="openAddModal()">
+
+            + Add Coach
+
+        </button>
+
+    </div>
+
+
+    <!-- ADD / EDIT MODAL -->
+    <div class="coach-modal-overlay" *ngIf="showModal" (click)="closeModal()">
+
+        <div class="coach-modal" (click)="$event.stopPropagation()">
+
+
+            <!-- MODAL HEADER -->
+            <div class="coach-modal-header">
+
+                <div>
+
+                    <h2>
+                        {{ isEditMode
+                        ? 'Edit Coach'
+                        : 'Add Coach' }}
+                    </h2>
+
+                    <p>
+                        {{ isEditMode
+                        ? 'Update coach information'
+                        : 'Enter coach information' }}
+                    </p>
+
+                </div>
+
+
+                <button type="button" class="close-btn" [disabled]="saving" (click)="closeModal()">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <!-- MODAL BODY -->
+            <div class="coach-modal-body">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Train
+                        <span>*</span>
+                    </label>
+
+                    <select [(ngModel)]="coachForm.trainId" [disabled]="isEditMode">
+
+                        <option *ngFor="let train of trains" [ngValue]="train.id">
+
+                            {{ train.trainNumber }}
+                            - {{ train.trainName }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Coach Number
+                        <span>*</span>
+                    </label>
+
+                    <input type="text" [(ngModel)]="coachForm.coachNumber" maxlength="20"
+                        placeholder="e.g. S1, S2, B1, A1" style="text-transform: uppercase;" />
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            Coach Type
+                            <span>*</span>
+                        </label>
+
+                        <select [(ngModel)]="coachForm.coachType">
+
+                            <option value="">
+                                -- Select Type --
+                            </option>
+
+                            <option *ngFor="let type of coachTypes" [value]="type">
+
+                                {{ type }}
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Total Seats
+                            <span>*</span>
+                        </label>
+
+                        <input type="number" [(ngModel)]="coachForm.totalSeats" min="1" placeholder="e.g. 72" />
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- MODAL FOOTER -->
+            <div class="coach-modal-footer">
+
+                <button type="button" class="cancel-btn" [disabled]="saving" (click)="closeModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button type="button" class="save-btn" [disabled]="saving" (click)="saveCoach()">
+
+                    <span *ngIf="!saving">
+
+                        {{ isEditMode
+                        ? 'Update Coach'
+                        : 'Add Coach' }}
+
+                    </span>
+
+                    <span *ngIf="saving">
+                        Saving...
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,577 @@
+<div class="admin-bookings">
+
+
+  <!-- HEADER -->
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ADMINISTRATION
+      </span>
+
+      <h1>
+        Manage Bookings
+      </h1>
+
+      <p>
+        View and manage all train bookings
+      </p>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="back-btn"
+        (click)="goBack()"
+      >
+
+        <i class="bi bi-arrow-left"></i>
+
+        Dashboard
+
+      </button>
+
+
+      <button
+        type="button"
+        class="refresh-btn"
+        (click)="refresh()"
+        [disabled]="loading"
+      >
+
+        <i
+          class="bi bi-arrow-clockwise"
+          [class.spin]="loading"
+        ></i>
+
+        Refresh
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ERROR -->
+
+  <div
+    class="error-box"
+    *ngIf="errorMessage"
+  >
+
+    <i class="bi bi-exclamation-triangle-fill"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+  </div>
+
+
+  <!-- SUMMARY -->
+
+  <div
+    class="stats-grid"
+    *ngIf="!loading"
+  >
+
+
+    <div class="stat-card total">
+
+      <div class="stat-icon">
+
+        <i class="bi bi-ticket-perforated-fill"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Total Bookings
+        </span>
+
+        <strong>
+          {{ totalBookings }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card confirmed">
+
+      <div class="stat-icon">
+
+        <i class="bi bi-check-circle-fill"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Confirmed
+        </span>
+
+        <strong>
+          {{ confirmedBookings }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card pending">
+
+      <div class="stat-icon">
+
+        <i class="bi bi-clock-fill"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Pending
+        </span>
+
+        <strong>
+          {{ pendingBookings }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card cancelled">
+
+      <div class="stat-icon">
+
+        <i class="bi bi-x-circle-fill"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Cancelled
+        </span>
+
+        <strong>
+          {{ cancelledBookings }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- LOADING -->
+
+  <div
+    class="loading-container"
+    *ngIf="loading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Loading bookings...
+    </p>
+
+  </div>
+
+
+  <!-- CONTENT -->
+
+  <ng-container *ngIf="!loading">
+
+
+    <div class="content-card">
+
+
+      <!-- FILTER HEADER -->
+
+      <div class="filter-section">
+
+
+        <div class="search-box">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            [(ngModel)]="searchText"
+            (input)="onSearch()"
+            placeholder="Search booking, user, train or seat..."
+          >
+
+        </div>
+
+
+        <select
+          [(ngModel)]="selectedStatus"
+          (change)="onStatusChange()"
+          class="status-filter"
+        >
+
+          <option value="ALL">
+            All Status
+          </option>
+
+          <option value="CONFIRMED">
+            Confirmed
+          </option>
+
+          <option value="PENDING">
+            Pending
+          </option>
+
+          <option value="CANCELLED">
+            Cancelled
+          </option>
+
+        </select>
+
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearFilters()"
+        >
+
+          <i class="bi bi-x-circle"></i>
+
+          Clear
+
+        </button>
+
+      </div>
+
+
+      <!-- RESULT COUNT -->
+
+      <div class="result-info">
+
+        Showing
+        <strong>
+          {{ filteredBookings.length }}
+        </strong>
+        of
+        <strong>
+          {{ totalBookings }}
+        </strong>
+        bookings
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div
+        class="table-wrapper"
+        *ngIf="filteredBookings.length > 0"
+      >
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                #
+              </th>
+
+              <th>
+                Booking
+              </th>
+
+              <th>
+                User
+              </th>
+
+              <th>
+                Train
+              </th>
+
+              <th>
+                Journey
+              </th>
+
+              <th>
+                Seat
+              </th>
+
+              <th>
+                Payment
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let booking of filteredBookings;
+                let i = index;
+                trackBy: trackByBookingId
+              "
+            >
+
+
+              <!-- NUMBER -->
+
+              <td class="serial">
+
+                {{ i + 1 }}
+
+              </td>
+
+
+              <!-- BOOKING -->
+
+              <td>
+
+                <div class="booking-cell">
+
+                  <strong>
+                    {{ booking.bookingNumber }}
+                  </strong>
+
+                  <small>
+                    #{{ booking.bookingId }}
+                  </small>
+
+                </div>
+
+              </td>
+
+
+              <!-- USER -->
+
+              <td>
+
+                <div class="user-cell">
+
+                  <div class="avatar">
+
+                    {{ booking.userName.charAt(0).toUpperCase() }}
+
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      {{ booking.userName }}
+                    </strong>
+
+                    <small>
+                      {{ booking.userEmail }}
+                    </small>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- TRAIN -->
+
+              <td>
+
+                <div class="train-cell">
+
+                  <strong>
+                    {{ booking.trainNumber }}
+                  </strong>
+
+                  <small>
+                    {{ booking.trainName }}
+                  </small>
+
+                </div>
+
+              </td>
+
+
+              <!-- JOURNEY -->
+
+              <td>
+
+                <div class="journey-cell">
+
+                  <strong>
+                    {{ booking.journeyDate | date:'dd MMM yyyy' }}
+                  </strong>
+
+                  <small>
+
+                    {{ booking.sourceStation }}
+
+                    <i class="bi bi-arrow-right"></i>
+
+                    {{ booking.destinationStation }}
+
+                  </small>
+
+                </div>
+
+              </td>
+
+
+              <!-- SEAT -->
+
+              <td>
+
+                <div class="seat-cell">
+
+                  <strong>
+                    {{ booking.seatNumber }}
+                  </strong>
+
+                  <small>
+                    {{ booking.coachNumber }}
+                    ·
+                    {{ booking.coachType }}
+                  </small>
+
+                </div>
+
+              </td>
+
+
+              <!-- PAYMENT -->
+
+              <td>
+
+                <div class="payment-cell">
+
+                  <strong
+                    *ngIf="booking.paymentAmount !== null"
+                  >
+
+                    ₹{{ booking.paymentAmount }}
+
+                  </strong>
+
+                  <span
+                    class="payment-badge"
+                    [class]="
+                      getPaymentStatusClass(
+                        booking.paymentStatus
+                      )
+                    "
+                  >
+
+                    {{ booking.paymentStatus || 'NOT PAID' }}
+
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- STATUS -->
+
+              <td>
+
+                <span
+                  class="booking-status"
+                  [class]="
+                    getBookingStatusClass(
+                      booking.bookingStatus
+                    )
+                  "
+                >
+
+                  {{ booking.bookingStatus }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  type="button"
+                  class="view-btn"
+                  (click)="viewBooking(booking)"
+                >
+
+                  <i class="bi bi-eye"></i>
+
+                  View
+
+                </button>
+
+              </td>
+
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- EMPTY -->
+
+      <div
+        class="empty-state"
+        *ngIf="filteredBookings.length === 0"
+      >
+
+        <i class="bi bi-ticket-perforated"></i>
+
+        <h3>
+          No Bookings Found
+        </h3>
+
+        <p>
+          No bookings match your current search or filter.
+        </p>
+
+        <button
+          type="button"
+          (click)="clearFilters()"
+        >
+          Clear Filters
+        </button>
+
+      </div>
+
+
+    </div>
+
+  </ng-container>
+
+</div>

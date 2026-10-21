@@ -1,0 +1,603 @@
+/* =========================================================
+   COACH SELECTION PAGE
+========================================================= */
+
+.coach-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+  color: #172033;
+  padding-bottom: 60px;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.page-header {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 40px;
+  padding: 9px 15px;
+
+  border: 1px solid #dce5f0;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #2563eb;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 15px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    background: #eef5ff;
+    border-color: #bcd4f2;
+    transform: translateY(-1px);
+
+    i {
+      transform: translateX(-3px);
+    }
+  }
+}
+
+.page-label {
+  display: block;
+
+  margin-top: 25px;
+  margin-bottom: 7px;
+
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+
+  color: #172033;
+
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   JOURNEY CARD
+========================================================= */
+
+.journey-card {
+  display: flex;
+  align-items: center;
+
+  gap: 25px;
+
+  margin-bottom: 26px;
+  padding: 20px 25px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5ebf3;
+  border-radius: 16px;
+
+  box-shadow:
+    0 6px 24px rgba(20, 50, 90, 0.06);
+}
+
+.journey-item {
+  min-width: 120px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.journey-item span {
+  color: #8a93a3;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.journey-item strong {
+  color: #172033;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.journey-divider {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eef4ff;
+  color: #2563eb;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert {
+  margin-bottom: 20px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-box {
+  min-height: 350px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #71829a;
+}
+
+.loading-box p {
+  margin: 0;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   COACH GRID
+========================================================= */
+
+.coach-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+
+/* =========================================================
+   COACH CARD
+========================================================= */
+
+.coach-card {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  min-height: 280px;
+
+  padding: 25px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5ebf3;
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 30px rgba(20, 50, 90, 0.07);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.coach-card:hover {
+  transform: translateY(-4px);
+
+  border-color: #cddff8;
+
+  box-shadow:
+    0 14px 35px rgba(20, 50, 90, 0.11);
+}
+
+
+/* =========================================================
+   COACH ICON
+========================================================= */
+
+.coach-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 22px;
+
+  border-radius: 14px;
+
+  background: #edf5ff;
+  color: #2563eb;
+
+  font-size: 25px;
+}
+
+.coach-card:nth-child(2) .coach-icon {
+  background: #f1f4ff;
+  color: #4f46e5;
+}
+
+.coach-card:nth-child(3) .coach-icon {
+  background: #eef9ff;
+  color: #0284c7;
+}
+
+.coach-card:nth-child(4) .coach-icon {
+  background: #f5f0ff;
+  color: #7c3aed;
+}
+
+
+/* =========================================================
+   COACH CONTENT
+========================================================= */
+
+.coach-content {
+  flex: 1;
+}
+
+.coach-code {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #7d8ba0;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.coach-content h3 {
+  margin: 0 0 9px;
+
+  color: #172033;
+
+  font-size: 23px;
+  line-height: 1.25;
+
+  font-weight: 700;
+}
+
+.coach-content p {
+  margin: 0;
+
+  color: #68778b;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   SELECT BUTTON
+========================================================= */
+
+.select-btn {
+  align-self: flex-start;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  min-height: 42px;
+
+  margin-top: 25px;
+  padding: 10px 18px;
+
+  border: 1px solid #2563eb;
+  border-radius: 9px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.select-btn i {
+  font-size: 14px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.select-btn:hover {
+  background: #1d4ed8;
+
+  box-shadow:
+    0 7px 18px rgba(37, 99, 235, 0.22);
+
+  transform: translateY(-1px);
+}
+
+.select-btn:hover i {
+  transform: translateX(3px);
+}
+
+
+/* =========================================================
+   NO COACH / EMPTY STATE
+========================================================= */
+
+.no-coach-box {
+  padding: 65px 30px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5ebf3;
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 30px rgba(20, 50, 90, 0.06);
+}
+
+.no-coach-icon {
+  width: 68px;
+  height: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  background: #edf5ff;
+  color: #2563eb;
+
+  font-size: 28px;
+}
+
+.no-coach-box h3 {
+  margin: 0 0 8px;
+
+  color: #172033;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.no-coach-box p {
+  margin: 0;
+
+  color: #71829a;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 992px) {
+
+  .coach-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+  }
+
+  .coach-card {
+    padding: 22px;
+  }
+
+  .coach-content h3 {
+    font-size: 21px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .coach-page {
+    padding-bottom: 40px;
+  }
+
+  .page-header h1 {
+    font-size: 29px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+  }
+
+  .journey-card {
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    padding: 18px;
+  }
+
+  .journey-item {
+    min-width: calc(50% - 25px);
+  }
+
+  .journey-divider {
+    display: none;
+  }
+
+  .coach-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .coach-card {
+    min-height: 245px;
+  }
+
+  .select-btn {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .coach-page .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .page-header .back-btn {
+    min-height: 38px;
+
+    padding: 8px 12px;
+
+    font-size: 12px;
+  }
+
+  .page-label {
+    margin-top: 20px;
+  }
+
+  .page-header h1 {
+    font-size: 26px;
+  }
+
+  .journey-card {
+    padding: 15px;
+  }
+
+  .journey-item span {
+    font-size: 9px;
+  }
+
+  .journey-item strong {
+    font-size: 14px;
+  }
+
+  .coach-card {
+    min-height: 225px;
+
+    padding: 20px;
+
+    border-radius: 15px;
+  }
+
+  .coach-icon {
+    width: 52px;
+    height: 52px;
+
+    margin-bottom: 18px;
+
+    font-size: 22px;
+  }
+
+  .coach-content h3 {
+    font-size: 20px;
+  }
+
+  .coach-content p {
+    font-size: 12px;
+  }
+
+  .select-btn {
+    min-height: 40px;
+
+    margin-top: 20px;
+
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   PRINT
+========================================================= */
+
+@media print {
+
+  .coach-page {
+    background: #ffffff;
+  }
+
+  .back-btn,
+  .select-btn {
+    display: none !important;
+  }
+
+  .coach-card,
+  .journey-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}

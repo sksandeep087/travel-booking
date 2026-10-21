@@ -1,0 +1,129 @@
+<nav class="navbar">
+
+  <div class="navbar-brand" (click)="goHome()">
+    <div class="brand-icon">▦</div>
+    <span>Train Booking</span>
+  </div>
+
+  <button
+    type="button"
+    class="mobile-menu-btn"
+    (click)="toggleMenu()"
+    aria-label="Toggle navigation"
+  >
+    ☰
+  </button>
+
+  <div class="navbar-links" [class.menu-open]="menuOpen">
+
+    <a (click)="goHome()">
+      <span>⌂</span> Home
+    </a>
+
+    <a *ngIf="isLoggedIn" (click)="goToMyBookings()">
+      <span>⚿</span> My Bookings
+    </a>
+
+    <a
+      *ngIf="isLoggedIn && isAdmin()"
+      (click)="goToAdminDashboard()"
+    >
+      <span>◉</span> Admin Dashboard
+    </a>
+
+    <div
+      class="session-countdown"
+      *ngIf="isLoggedIn && sessionTimeLeft"
+    >
+      <span>◷</span>
+      <span>{{ sessionTimeLeft }}</span>
+    </div>
+
+    <ng-container *ngIf="!isLoggedIn">
+      <a (click)="goToLogin()">Login</a>
+      <a class="register-link" (click)="goToRegister()">
+        Register
+      </a>
+    </ng-container>
+
+    <div class="user-menu" *ngIf="isLoggedIn">
+
+      <button
+        type="button"
+        class="user-button"
+        (click)="toggleUserDropdown()"
+      >
+        <span class="user-avatar">♟</span>
+        <span class="user-name">{{ userName }}</span>
+        <span class="dropdown-arrow">⌄</span>
+      </button>
+
+      <div class="user-dropdown" *ngIf="userDropdownOpen">
+
+        <div class="user-details">
+          <strong>{{ userName }}</strong>
+          <small>{{ userEmail }}</small>
+        </div>
+
+        <button
+          type="button"
+          class="dropdown-logout"
+          (click)="logout()"
+        >
+          Logout
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- SESSION EXPIRED POPUP -->
+<div
+  class="session-overlay"
+  *ngIf="showSessionPopup"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="session-popup-title"
+>
+  <div class="session-modal">
+
+    <div class="session-icon">◷</div>
+
+    <h2 id="session-popup-title">Session Expired</h2>
+
+    <p>{{ sessionMessage }}</p>
+
+    <!-- Automatic logout warning -->
+    <div class="session-warning" *ngIf="!isRefreshingSession">
+      <span>⚠</span>
+      You will be automatically logged out in
+      <strong>{{ popupTimeLeft }} seconds</strong>
+      if you do not choose an action.
+    </div>
+
+    <div class="session-actions">
+
+      <button
+        type="button"
+        class="btn-continue"
+        [disabled]="isRefreshingSession"
+        (click)="continueSession()"
+      >
+        {{ isRefreshingSession ? 'Refreshing...' : 'Continue' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn-logout"
+        [disabled]="isRefreshingSession"
+        (click)="logoutFromSessionPopup()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  </div>
+</div>

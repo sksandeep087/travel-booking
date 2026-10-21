@@ -1,0 +1,395 @@
+<div class="admin-dashboard">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <div class="dashboard-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ADMINISTRATION
+      </span>
+
+      <h1>
+        Admin Dashboard
+      </h1>
+
+      <p>
+        Overview of your train booking system
+      </p>
+
+    </div>
+
+
+    <button type="button" class="refresh-btn" (click)="refresh()" [disabled]="loading">
+
+      <i class="bi bi-arrow-clockwise" [class.spin]="loading"></i>
+
+      Refresh
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  <div class="error-box" *ngIf="errorMessage">
+
+    <i class="bi bi-exclamation-triangle-fill"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+  </div>
+
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+
+  <div class="loading-container" *ngIf="loading">
+
+    <div class="spinner"></div>
+
+    <p>
+      Loading dashboard...
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       DASHBOARD
+       ===================================================== -->
+
+  <ng-container *ngIf="!loading && dashboard">
+
+
+    <!-- =================================================
+         TOP CARDS
+         ================================================= -->
+
+    <div class="stats-grid">
+
+
+      <!-- Users -->
+
+      <div class="stat-card users">
+
+        <div class="stat-icon">
+
+          <i class="bi bi-people-fill"></i>
+
+        </div>
+
+        <div class="stat-content">
+
+          <span>
+            Total Users
+          </span>
+
+          <strong>
+            {{ dashboard.totalUsers }}
+          </strong>
+
+          <small>
+            Registered users
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Trains -->
+
+      <div class="stat-card trains">
+
+        <div class="stat-icon">
+
+          <i class="bi bi-train-front-fill"></i>
+
+        </div>
+
+        <div class="stat-content">
+
+          <span>
+            Total Trains
+          </span>
+
+          <strong>
+            {{ dashboard.totalTrains }}
+          </strong>
+
+          <small>
+            {{ dashboard.activeTrains }} active trains
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Bookings -->
+
+      <div class="stat-card bookings">
+
+        <div class="stat-icon">
+
+          <i class="bi bi-ticket-perforated-fill"></i>
+
+        </div>
+
+        <div class="stat-content">
+
+          <span>
+            Total Bookings
+          </span>
+
+          <strong>
+            {{ dashboard.totalBookings }}
+          </strong>
+
+          <small>
+            All bookings
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         BOOKING STATUS
+         ================================================= -->
+
+    <div class="status-grid">
+
+
+      <!-- Confirmed -->
+
+      <div class="status-card confirmed">
+
+        <div class="status-icon">
+
+          <i class="bi bi-check-circle-fill"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Confirmed
+          </span>
+
+          <strong>
+            {{ dashboard.confirmedBookings }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Pending -->
+
+      <div class="status-card pending">
+
+        <div class="status-icon">
+
+          <i class="bi bi-clock-fill"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Pending
+          </span>
+
+          <strong>
+            {{ dashboard.pendingBookings }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Cancelled -->
+
+      <div class="status-card cancelled">
+
+        <div class="status-icon">
+
+          <i class="bi bi-x-circle-fill"></i>
+
+        </div>
+
+        <div>
+
+          <span>
+            Cancelled
+          </span>
+
+          <strong>
+            {{ dashboard.cancelledBookings }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         QUICK ACTIONS
+         ================================================= -->
+
+    <!-- =================================================
+     QUICK ACTIONS
+     ================================================= -->
+
+    <div class="section-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-label">
+            MANAGEMENT
+          </span>
+
+          <h2>
+            Quick Actions
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="quick-actions">
+
+
+        <!-- Manage Trains -->
+
+        <button type="button" class="quick-action" (click)="goToManageTrains()">
+
+          <span class="quick-icon blue">
+
+            <i class="bi bi-train-front"></i>
+
+          </span>
+
+          <span>
+
+            <strong>
+              Manage Trains
+            </strong>
+
+            <small>
+              Add, edit and manage trains
+            </small>
+
+          </span>
+
+          <i class="bi bi-chevron-right arrow"></i>
+
+        </button>
+
+
+        <!-- Manage Bookings -->
+
+        <button type="button" class="quick-action" (click)="goToManageBookings()">
+
+          <span class="quick-icon green">
+
+            <i class="bi bi-ticket-detailed"></i>
+
+          </span>
+
+          <span>
+
+            <strong>
+              Manage Bookings
+            </strong>
+
+            <small>
+              View and manage all bookings
+            </small>
+
+          </span>
+
+          <i class="bi bi-chevron-right arrow"></i>
+
+        </button>
+
+
+        <!-- Manage Users -->
+
+        <button type="button" class="quick-action" (click)="goToManageUsers()">
+
+          <span class="quick-icon purple">
+
+            <i class="bi bi-people"></i>
+
+          </span>
+
+          <span>
+
+            <strong>
+              Manage Users
+            </strong>
+
+            <small>
+              View registered users
+            </small>
+
+          </span>
+
+          <i class="bi bi-chevron-right arrow"></i>
+
+        </button>
+
+        <button type="button" class="quick-action" (click)="goToManageCoaches()">
+
+          <span class="quick-action-icon">
+            🚃
+          </span>
+
+          <span>
+            <strong>Manage Coaches</strong>
+            <small>Add, edit and manage train coaches</small>
+          </span>
+
+        </button>
+
+        <button type="button" class="quick-action" (click)="goToManageSeats()">
+
+          <span class="quick-action-icon">💺</span>
+
+          <span>
+            <strong>Manage Seats</strong>
+            <small>Manage coach seats</small>
+          </span>
+
+        </button>
+
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

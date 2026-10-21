@@ -1,0 +1,609 @@
+<div class="my-bookings-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <span class="eyebrow">
+        ACCOUNT
+      </span>
+
+      <h1>
+        My Bookings
+      </h1>
+
+      <p>
+        View and manage your train bookings
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="refresh()"
+      [disabled]="loading"
+    >
+
+      <i
+        class="bi bi-arrow-clockwise"
+        [class.spin]="loading"
+      ></i>
+
+      Refresh
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  <div
+    class="alert-box error"
+    *ngIf="errorMessage"
+  >
+
+    <i class="bi bi-exclamation-triangle-fill"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+  </div>
+
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+
+  <div
+    class="loading-state"
+    *ngIf="loading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Loading your bookings...
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       FILTERS
+       ===================================================== -->
+
+  <div
+    class="booking-filters"
+    *ngIf="!loading && bookings.length > 0"
+  >
+
+    <!-- ALL -->
+
+    <button
+      type="button"
+      class="filter-btn"
+      [class.active]="activeFilter === 'ALL'"
+      (click)="setFilter('ALL')"
+    >
+
+      <i class="bi bi-grid"></i>
+
+      <span class="filter-name">
+        All
+      </span>
+
+      <span class="filter-count">
+        {{ getFilterCount('ALL') }}
+      </span>
+
+    </button>
+
+
+    <!-- CONFIRMED -->
+
+    <button
+      type="button"
+      class="filter-btn confirmed"
+      [class.active]="activeFilter === 'CONFIRMED'"
+      (click)="setFilter('CONFIRMED')"
+    >
+
+      <i class="bi bi-check-circle"></i>
+
+      <span class="filter-name">
+        Confirmed
+      </span>
+
+      <span class="filter-count">
+        {{ getFilterCount('CONFIRMED') }}
+      </span>
+
+    </button>
+
+
+    <!-- PENDING -->
+
+    <button
+      type="button"
+      class="filter-btn pending"
+      [class.active]="activeFilter === 'PENDING'"
+      (click)="setFilter('PENDING')"
+    >
+
+      <i class="bi bi-clock"></i>
+
+      <span class="filter-name">
+        Pending
+      </span>
+
+      <span class="filter-count">
+        {{ getFilterCount('PENDING') }}
+      </span>
+
+    </button>
+
+
+    <!-- CANCELLED -->
+
+    <button
+      type="button"
+      class="filter-btn cancelled"
+      [class.active]="activeFilter === 'CANCELLED'"
+      (click)="setFilter('CANCELLED')"
+    >
+
+      <i class="bi bi-x-circle"></i>
+
+      <span class="filter-name">
+        Cancelled
+      </span>
+
+      <span class="filter-count">
+        {{ getFilterCount('CANCELLED') }}
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       FILTER EMPTY STATE
+       ===================================================== -->
+
+  <div
+    class="empty-state"
+    *ngIf="
+      !loading &&
+      !errorMessage &&
+      bookings.length > 0 &&
+      filteredBookings.length === 0
+    "
+  >
+
+    <div class="empty-icon">
+
+      <i
+        class="bi"
+        [ngClass]="{
+          'bi-check-circle':
+            activeFilter === 'CONFIRMED',
+
+          'bi-clock':
+            activeFilter === 'PENDING',
+
+          'bi-x-circle':
+            activeFilter === 'CANCELLED',
+
+          'bi-ticket-perforated':
+            activeFilter === 'ALL'
+        }"
+      ></i>
+
+    </div>
+
+    <h2>
+      {{ getFilterTitle() }}
+    </h2>
+
+    <p>
+      {{ getFilterMessage() }}
+    </p>
+
+    <button
+      type="button"
+      class="primary-btn"
+      (click)="setFilter('ALL')"
+    >
+
+      <i class="bi bi-grid"></i>
+
+      View All Bookings
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       NO BOOKINGS
+       ===================================================== -->
+
+  <div
+    class="empty-state"
+    *ngIf="
+      !loading &&
+      !errorMessage &&
+      bookings.length === 0
+    "
+  >
+
+    <div class="empty-icon">
+
+      <i class="bi bi-ticket-perforated"></i>
+
+    </div>
+
+    <h2>
+      No Bookings Found
+    </h2>
+
+    <p>
+      You do not have any train bookings yet.
+    </p>
+
+    <button
+      type="button"
+      class="primary-btn"
+      (click)="goHome()"
+    >
+
+      <i class="bi bi-search"></i>
+
+      Search Trains
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       BOOKING LIST
+       ===================================================== -->
+
+  <div
+    class="booking-list"
+    *ngIf="
+      !loading &&
+      filteredBookings.length > 0
+    "
+  >
+
+    <div
+      class="booking-card"
+      *ngFor="
+        let booking of filteredBookings;
+        trackBy: trackByBookingId
+      "
+    >
+
+
+      <!-- =================================================
+           CARD HEADER
+           ================================================= -->
+
+      <div class="booking-header">
+
+        <div class="booking-reference">
+
+          <span>
+            BOOKING ID
+          </span>
+
+          <strong>
+            #{{ booking.bookingId }}
+          </strong>
+
+        </div>
+
+
+        <div
+          class="booking-status"
+          [ngClass]="
+            getBookingStatusClass(
+              booking.bookingStatus
+            )
+          "
+        >
+
+          <i
+            class="bi"
+            [ngClass]="
+              getBookingStatusIcon(
+                booking.bookingStatus
+              )
+            "
+          ></i>
+
+          {{ booking.bookingStatus }}
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           TRAIN + ROUTE
+           ================================================= -->
+
+      <div class="train-section">
+
+
+        <!-- Train -->
+
+        <div class="train-info">
+
+          <span class="label">
+            TRAIN
+          </span>
+
+          <h2>
+            {{ booking.trainName }}
+          </h2>
+
+          <strong>
+            {{ booking.trainNumber }}
+          </strong>
+
+        </div>
+
+
+        <!-- Route -->
+
+        <div class="route">
+
+          <div class="station">
+
+            <strong>
+              {{ booking.sourceStation }}
+            </strong>
+
+            <span>
+              From
+            </span>
+
+          </div>
+
+
+          <div class="route-line">
+
+            <i class="bi bi-train-front-fill"></i>
+
+            <span></span>
+
+          </div>
+
+
+          <div class="station destination">
+
+            <strong>
+              {{ booking.destinationStation }}
+            </strong>
+
+            <span>
+              To
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           DETAILS
+           ================================================= -->
+
+      <div class="booking-details">
+
+
+        <!-- Journey -->
+
+        <div class="detail-item">
+
+          <span class="detail-label">
+
+            <i class="bi bi-calendar3"></i>
+
+            Journey Date
+
+          </span>
+
+          <strong>
+            {{ formatDate(booking.journeyDate) }}
+          </strong>
+
+        </div>
+
+
+        <!-- Coach -->
+
+        <div class="detail-item">
+
+          <span class="detail-label">
+
+            <i class="bi bi-door-open"></i>
+
+            Coach
+
+          </span>
+
+          <strong>
+            {{ booking.coachNumber }}
+          </strong>
+
+          <small>
+            {{ booking.coachType }}
+          </small>
+
+        </div>
+
+
+        <!-- Seat -->
+
+        <div class="detail-item">
+
+          <span class="detail-label">
+
+            <i class="bi bi-grid-3x3-gap"></i>
+
+            Seat
+
+          </span>
+
+          <strong>
+            {{ booking.seatNumber }}
+          </strong>
+
+        </div>
+
+
+        <!-- Payment -->
+
+        <div class="detail-item">
+
+          <span class="detail-label">
+
+            <i class="bi bi-credit-card"></i>
+
+            Payment
+
+          </span>
+
+          <span
+            class="payment-status"
+            [ngClass]="
+              getPaymentStatusClass(
+                booking.paymentStatus
+              )
+            "
+          >
+
+            <i
+              class="bi"
+              [ngClass]="
+                getPaymentStatusIcon(
+                  booking.paymentStatus
+                )
+              "
+            ></i>
+
+            {{
+              booking.paymentStatus || 'N/A'
+            }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           ACTIONS
+           ================================================= -->
+
+      <div class="booking-actions">
+
+
+        <!-- View Ticket -->
+
+        <button
+          type="button"
+          class="ticket-btn"
+          (click)="
+            viewTicket(
+              booking.bookingId
+            )
+          "
+        >
+
+          <i class="bi bi-ticket-detailed"></i>
+
+          View Ticket
+
+        </button>
+
+
+        <!-- Cancel -->
+
+        <button
+          type="button"
+          class="cancel-btn"
+          *ngIf="canCancel(booking)"
+          [disabled]="
+            cancellingBookingId ===
+            booking.bookingId
+          "
+          (click)="
+            cancelBooking(booking)
+          "
+        >
+
+          <ng-container
+            *ngIf="
+              cancellingBookingId !==
+                booking.bookingId;
+              else cancelling
+            "
+          >
+
+            <i class="bi bi-x-circle"></i>
+
+            Cancel Booking
+
+          </ng-container>
+
+
+          <ng-template #cancelling>
+
+            <span class="mini-spinner"></span>
+
+            Cancelling...
+
+          </ng-template>
+
+        </button>
+
+
+        <!-- Cancelled -->
+
+        <span
+          class="cancelled-label"
+          *ngIf="isCancelled(booking)"
+        >
+
+          <i class="bi bi-check-circle"></i>
+
+          Booking Cancelled
+
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

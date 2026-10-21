@@ -1,0 +1,279 @@
+.seat-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding-bottom: 60px;
+}
+
+.page-header {
+  margin-bottom: 30px;
+
+  .back-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: #2563eb;
+    font-weight: 600;
+    margin-bottom: 25px;
+
+    i {
+      margin-right: 8px;
+    }
+  }
+
+  .page-label {
+    display: block;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 34px;
+    font-weight: 700;
+    color: #172033;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+  }
+}
+
+.journey-card {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 28px;
+  margin-bottom: 25px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.journey-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  span {
+    color: #8a93a3;
+    font-size: 13px;
+  }
+
+  strong {
+    color: #172033;
+    font-size: 17px;
+  }
+}
+
+.journey-divider {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eef4ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat-layout-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.06);
+}
+
+.coach-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #edf0f5;
+
+  span {
+    font-size: 11px;
+    font-weight: 700;
+    color: #8a93a3;
+    letter-spacing: 1px;
+  }
+
+  h3 {
+    margin: 3px 0 0;
+    color: #172033;
+  }
+}
+
+.coach-front {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+
+  i {
+    margin-right: 7px;
+  }
+}
+
+.seat-legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 25px 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.legend-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid #d8dde7;
+
+  &.available {
+    background: #fff;
+  }
+
+  &.selected {
+    background: #2563eb;
+    border-color: #2563eb;
+  }
+
+  &.booked {
+    background: #e5e7eb;
+    border-color: #e5e7eb;
+  }
+}
+
+.seat-grid {
+  max-width: 700px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 20px;
+  background: #f8faff;
+  border-radius: 16px;
+}
+
+.seat {
+  min-height: 65px;
+  border: 1px solid #dce2ec;
+  background: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+
+  .seat-number {
+    font-weight: 700;
+    color: #172033;
+    font-size: 16px;
+  }
+
+  small {
+    color: #8a93a3;
+    font-size: 10px;
+    margin-top: 3px;
+  }
+
+  &:hover {
+    border-color: #2563eb;
+    transform: translateY(-2px);
+  }
+
+  &.selected {
+    background: #2563eb;
+    border-color: #2563eb;
+
+    .seat-number,
+    small {
+      color: #fff;
+    }
+  }
+}
+
+.selected-seat-info {
+  margin-top: 25px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: #eef4ff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  span {
+    font-size: 10px;
+    font-weight: 700;
+    color: #2563eb;
+    letter-spacing: 1px;
+  }
+
+  strong {
+    color: #172033;
+    font-size: 20px;
+  }
+
+  small {
+    color: #6b7280;
+  }
+}
+
+.continue-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 20px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+
+  i {
+    margin-left: 8px;
+  }
+
+  &:hover {
+    background: #1d4ed8;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .journey-card {
+    flex-wrap: wrap;
+  }
+
+  .seat-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .seat-legend {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .selected-seat-info {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .continue-btn {
+    width: 100%;
+  }
+}

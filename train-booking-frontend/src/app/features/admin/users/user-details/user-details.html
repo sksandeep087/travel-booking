@@ -1,0 +1,282 @@
+<div class="user-details-page">
+
+
+    <!-- =========================
+       HEADER
+  ========================== -->
+
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <button type="button" class="back-btn" (click)="goBack()" title="Back to Users">
+
+                ←
+
+            </button>
+
+
+            <div>
+
+                <h1>
+                    User Details
+                </h1>
+
+                <p>
+                    View registered user information
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+       LOADING
+  ========================== -->
+
+    <div *ngIf="loading" class="loading-container">
+
+        <div class="spinner"></div>
+
+        <p>
+            Loading user details...
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+       ERROR
+  ========================== -->
+
+    <div *ngIf="!loading && errorMessage" class="error-container">
+
+        <div class="error-icon">
+            ⚠️
+        </div>
+
+        <h3>
+            Unable to Load User
+        </h3>
+
+        <p>
+            {{ errorMessage }}
+        </p>
+
+        <button type="button" class="back-main-btn" (click)="goBack()">
+
+            Back to Users
+
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+       USER DETAILS
+  ========================== -->
+
+    <div *ngIf="!loading && user" class="details-card">
+
+
+        <!-- =========================
+         PROFILE HEADER
+    ========================== -->
+
+        <div class="profile-header">
+
+            <div class="profile-avatar">
+
+                {{ getInitial() }}
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <h2>
+                    {{ user.name }}
+                </h2>
+
+                <p>
+                    {{ user.email }}
+                </p>
+
+            </div>
+
+
+            <div class="profile-role">
+
+                <span class="role-badge" [class.admin-role]="user.role === 'ADMIN'"
+                    [class.user-role]="user.role === 'USER'">
+
+                    {{ user.role }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+         DETAILS
+    ========================== -->
+
+        <div class="details-section">
+
+            <h3>
+                Personal Information
+            </h3>
+
+
+            <div class="details-grid">
+
+
+                <!-- Name -->
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        Full Name
+                    </span>
+
+                    <span class="detail-value">
+                        {{ user.name }}
+                    </span>
+
+                </div>
+
+
+                <!-- Email -->
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        Email Address
+                    </span>
+
+                    <span class="detail-value">
+                        {{ user.email }}
+                    </span>
+
+                </div>
+
+
+                <!-- Mobile -->
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        Mobile Number
+                    </span>
+
+                    <span class="detail-value">
+                        {{ user.mobile }}
+                    </span>
+
+                </div>
+
+
+                <!-- Role -->
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        Account Role
+                    </span>
+
+                    <span class="detail-value">
+
+                        <span class="role-badge" [class.admin-role]="user.role === 'ADMIN'"
+                            [class.user-role]="user.role === 'USER'">
+
+                            {{ user.role }}
+
+                        </span>
+
+                    </span>
+
+                </div>
+
+
+                <!-- User ID -->
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        User ID
+                    </span>
+
+                    <span class="detail-value">
+                        #{{ user.id }}
+                    </span>
+
+                </div>
+
+
+                <!-- Created -->
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        Registered On
+                    </span>
+
+                    <span class="detail-value">
+
+                        {{
+                        user.createdAt
+                        | date:'dd MMM yyyy, hh:mm a'
+                        }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- Updated -->
+
+                <div class="detail-item">
+
+                    <span class="detail-label">
+                        Last Updated
+                    </span>
+
+                    <span class="detail-value">
+
+                        {{
+                        user.updatedAt
+                        ? (user.updatedAt | date:'dd MMM yyyy, hh:mm a')
+                        : 'Not available'
+                        }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+         FOOTER
+    ========================== -->
+
+        <div class="details-footer">
+
+            <button type="button" class="back-main-btn" (click)="goBack()">
+
+                ← Back to Users
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

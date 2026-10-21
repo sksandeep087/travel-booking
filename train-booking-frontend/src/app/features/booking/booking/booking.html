@@ -1,0 +1,425 @@
+<div class="booking-page">
+
+  <div class="container py-5">
+
+    <!-- BACK -->
+    <button type="button" class="back-btn" (click)="goBack()">
+
+      <i class="bi bi-arrow-left me-2"></i>
+
+      Back to Seats
+
+    </button>
+
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+      <div class="step-label">
+        STEP 3 OF 3
+      </div>
+
+      <h1>
+        Confirm Your Booking
+      </h1>
+
+      <p>
+        Review your journey details before proceeding to payment.
+      </p>
+
+    </div>
+
+
+    <!-- ERROR -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+
+      <i class="bi bi-exclamation-circle me-2"></i>
+
+      {{ errorMessage }}
+
+    </div>
+
+
+    <!-- SUCCESS -->
+    <div *ngIf="successMessage" class="alert alert-success">
+
+      <i class="bi bi-check-circle me-2"></i>
+
+      {{ successMessage }}
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- BASIC JOURNEY INFORMATION -->
+    <!-- ================================================= -->
+
+    <div class="booking-card">
+
+      <div class="card-title">
+
+        <i class="bi bi-ticket-perforated me-2"></i>
+
+        Journey Details
+
+      </div>
+
+
+      <div class="details-grid">
+
+        <!-- TRAIN -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            TRAIN
+          </span>
+
+          <strong>
+            {{ bookingDetails?.train?.trainNumber || ('#' + trainId) }}
+          </strong>
+
+          <small *ngIf="bookingDetails?.train?.trainName">
+
+            {{ bookingDetails?.train?.trainName }}
+
+          </small>
+
+        </div>
+
+
+        <!-- FROM -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            FROM
+          </span>
+
+          <strong>
+            {{ sourceStation?.stationCode || '--' }}
+          </strong>
+
+          <small>
+            {{ sourceStation?.stationName || 'Departure station' }}
+          </small>
+
+        </div>
+
+
+        <!-- TO -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            TO
+          </span>
+
+          <strong>
+            {{ destinationStation?.stationCode || '--' }}
+          </strong>
+
+          <small>
+            {{ destinationStation?.stationName || 'Destination station' }}
+          </small>
+
+        </div>
+
+
+        <!-- JOURNEY DATE -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            JOURNEY DATE
+          </span>
+
+          <strong>
+            {{ journeyDate | date:'dd MMM yyyy' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- BOOKING DETAILS -->
+    <!-- ================================================= -->
+
+    <div *ngIf="bookingResponse" class="booking-card">
+
+      <div class="card-title">
+
+        <i class="bi bi-person-vcard me-2"></i>
+
+        Booking Details
+
+      </div>
+
+
+      <div class="details-grid">
+
+
+        <!-- BOOKING NUMBER -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            BOOKING NUMBER
+          </span>
+
+          <strong>
+            {{ bookingDetails?.bookingNumber || ('#' + bookingResponse.bookingId) }}
+          </strong>
+
+        </div>
+
+
+        <!-- BOOKING STATUS -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            BOOKING STATUS
+          </span>
+
+          <span class="status-badge" [ngClass]="{
+              'pending': bookingResponse.status === 'PENDING',
+              'confirmed': bookingResponse.status === 'CONFIRMED',
+              'cancelled': bookingResponse.status === 'CANCELLED'
+            }">
+
+            {{ bookingResponse.status }}
+
+          </span>
+
+        </div>
+
+
+        <!-- COACH -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            COACH
+          </span>
+
+          <strong>
+
+            {{
+            bookingDetails?.seat?.coach?.coachNumber
+            || ('#' + coachId)
+            }}
+
+          </strong>
+
+          <small *ngIf="bookingDetails?.seat?.coach?.coachType">
+
+            {{ bookingDetails?.seat?.coach?.coachType }}
+
+          </small>
+
+        </div>
+
+
+        <!-- SEAT -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            SEAT
+          </span>
+
+          <strong>
+
+            {{
+            bookingDetails?.seat?.seatNumber
+            || ('#' + seatId)
+            }}
+
+          </strong>
+
+          <small *ngIf="bookingDetails?.seat?.seatType">
+
+            {{ bookingDetails?.seat?.seatType }}
+
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- ROUTE CARD -->
+    <!-- ================================================= -->
+
+    <div *ngIf="bookingDetails" class="route-card">
+
+      <div class="route-point">
+
+        <div class="station-code">
+
+          {{ bookingDetails.train.sourceStation.stationCode }}
+
+        </div>
+
+        <div class="station-name">
+
+          {{ bookingDetails.train.sourceStation.stationName }}
+
+        </div>
+
+        <div class="station-location">
+
+          {{ bookingDetails.train.sourceStation.city }},
+          {{ bookingDetails.train.sourceStation.state }}
+
+        </div>
+
+        <div class="station-time">
+
+          {{ formatTime(bookingDetails.train.departureTime) }}
+
+        </div>
+
+      </div>
+
+
+      <div class="route-line">
+
+        <div class="train-icon">
+
+          <i class="bi bi-train-front-fill"></i>
+
+        </div>
+
+        <div class="line"></div>
+
+        <span>
+          Journey
+        </span>
+
+      </div>
+
+
+      <div class="route-point destination">
+
+        <div class="station-code">
+
+          {{ bookingDetails.train.destinationStation.stationCode }}
+
+        </div>
+
+        <div class="station-name">
+
+          {{ bookingDetails.train.destinationStation.stationName }}
+
+        </div>
+
+        <div class="station-location">
+
+          {{ bookingDetails.train.destinationStation.city }},
+          {{ bookingDetails.train.destinationStation.state }}
+
+        </div>
+
+        <div class="station-time">
+
+          {{ formatTime(bookingDetails.train.arrivalTime) }}
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- LOADING DETAILS -->
+    <!-- ================================================= -->
+
+    <div *ngIf="loadingDetails" class="loading-card">
+
+      <div class="spinner-border text-primary" role="status">
+
+      </div>
+
+      <span>
+        Loading booking details...
+      </span>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- ACTION -->
+    <!-- ================================================= -->
+
+    <div class="action-card">
+
+      <div>
+
+        <span class="action-label">
+          BOOKING
+        </span>
+
+
+        <h3>
+
+          {{
+          bookingResponse
+          ? 'Your seat is reserved'
+          : 'Ready to confirm your booking?'
+          }}
+
+        </h3>
+
+
+        <p>
+
+          {{
+          bookingResponse
+          ? 'Complete the payment to confirm your booking.'
+          : 'Click the button below to reserve this seat.'
+          }}
+
+        </p>
+
+      </div>
+
+
+      <!-- CREATE BOOKING -->
+      <button *ngIf="!bookingResponse" type="button" class="continue-btn" [disabled]="creatingBooking"
+        (click)="createBooking()">
+
+        <span *ngIf="creatingBooking" class="spinner-border spinner-border-sm me-2">
+        </span>
+
+        <i *ngIf="!creatingBooking" class="bi bi-check-circle me-2">
+        </i>
+
+        {{
+        creatingBooking
+        ? 'Creating Booking...'
+        : 'Confirm Booking'
+        }}
+
+      </button>
+
+
+      <!-- PAYMENT -->
+      <button *ngIf="bookingResponse" type="button" class="continue-btn" [disabled]="loadingDetails"
+        (click)="proceedToPayment()">
+
+        <i class="bi bi-credit-card me-2"></i>
+
+        Proceed to Payment
+
+        <i class="bi bi-arrow-right ms-2"></i>
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>

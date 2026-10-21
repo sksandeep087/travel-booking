@@ -1,0 +1,440 @@
+<div class="manage-users-page">
+
+    <!-- =========================
+       PAGE HEADER
+  ========================== -->
+
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <button type="button" class="back-btn" (click)="goBack()" title="Back to Dashboard">
+
+                ←
+
+            </button>
+
+
+            <div>
+
+                <h1>
+                    Manage Users
+                </h1>
+
+                <p>
+                    View and manage registered users
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+       SUMMARY CARDS
+  ========================== -->
+
+    <div class="summary-grid">
+
+
+        <!-- Total Users -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon users-icon">
+                👥
+            </div>
+
+            <div>
+
+                <span>
+                    Total Users
+                </span>
+
+                <strong>
+                    {{ totalUsers }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Administrators -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon admin-icon">
+                🛡️
+            </div>
+
+            <div>
+
+                <span>
+                    Administrators
+                </span>
+
+                <strong>
+                    {{ adminCount }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Normal Users -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon user-icon">
+                👤
+            </div>
+
+            <div>
+
+                <span>
+                    Normal Users
+                </span>
+
+                <strong>
+                    {{ normalUserCount }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+       SUCCESS MESSAGE
+  ========================== -->
+
+    <div *ngIf="successMessage" class="alert success-alert">
+
+        {{ successMessage }}
+
+    </div>
+
+
+    <!-- =========================
+       ERROR MESSAGE
+  ========================== -->
+
+    <div *ngIf="errorMessage" class="alert error-alert">
+
+        {{ errorMessage }}
+
+    </div>
+
+
+    <!-- =========================
+       USERS CARD
+  ========================== -->
+
+    <div class="users-card">
+
+
+        <!-- =========================
+         TOOLBAR
+    ========================== -->
+
+        <div class="toolbar">
+
+
+            <!-- Search -->
+
+            <div class="search-box">
+
+                <span class="search-icon">
+                    🔍
+                </span>
+
+                <input type="text" [(ngModel)]="searchText" (input)="onSearch()"
+                    placeholder="Search by name, email or mobile..." />
+
+            </div>
+
+
+            <!-- Role -->
+
+            <div class="filter-box">
+
+                <label for="roleFilter">
+                    Role
+                </label>
+
+                <select id="roleFilter" [(ngModel)]="selectedRole" (change)="onRoleChange()">
+
+                    <option value="ALL">
+                        All Roles
+                    </option>
+
+                    <option value="ADMIN">
+                        Admin
+                    </option>
+
+                    <option value="USER">
+                        User
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Clear -->
+
+            <button type="button" class="clear-btn" (click)="clearSearch()">
+
+                Clear
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+         LOADING
+    ========================== -->
+
+        <div *ngIf="loading" class="loading-container">
+
+            <div class="spinner"></div>
+
+            <p>
+                Loading users...
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+         EMPTY
+    ========================== -->
+
+        <div *ngIf="
+        !loading &&
+        filteredUsers.length === 0
+      " class="empty-state">
+
+            <div class="empty-icon">
+                👥
+            </div>
+
+            <h3>
+                No Users Found
+            </h3>
+
+            <p>
+                No users match your search criteria.
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+         USERS TABLE
+    ========================== -->
+
+        <div *ngIf="
+        !loading &&
+        filteredUsers.length > 0
+      " class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            User
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Mobile
+                        </th>
+
+                        <th>
+                            Role
+                        </th>
+
+                        <th>
+                            Created Date
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr *ngFor="
+              let user of filteredUsers;
+              let i = index;
+              trackBy: trackByUserId
+            ">
+
+
+                        <!-- Serial -->
+
+                        <td class="serial">
+
+                            {{ i + 1 }}
+
+                        </td>
+
+
+                        <!-- User -->
+
+                        <td>
+
+                            <div class="user-info">
+
+                                <div class="avatar">
+
+                                    {{
+                                    user.name
+                                    .charAt(0)
+                                    .toUpperCase()
+                                    }}
+
+                                </div>
+
+                                <div class="user-name">
+
+                                    {{ user.name }}
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Email -->
+
+                        <td>
+
+                            {{ user.email }}
+
+                        </td>
+
+
+                        <!-- Mobile -->
+
+                        <td>
+
+                            {{ user.mobile }}
+
+                        </td>
+
+
+                        <!-- Role -->
+
+                        <td>
+
+                            <span class="role-badge" [class.admin-role]="
+                  user.role === 'ADMIN'
+                " [class.user-role]="
+                  user.role === 'USER'
+                ">
+
+                                {{ user.role }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Created Date -->
+
+                        <td>
+
+                            {{
+                            user.createdAt
+                            | date:'dd MMM yyyy, hh:mm a'
+                            }}
+
+                        </td>
+
+
+                        <!-- Action -->
+
+                        <td class="action-cell">
+
+                            <button type="button" class="role-btn" (click)="changeUserRole(user)">
+
+                                <i class="bi bi-shield-lock"></i>
+
+                                {{ user.role === 'ADMIN'
+                                ? 'Make User'
+                                : 'Make Admin' }}
+
+                            </button>
+
+                            <button type="button" class="view-btn" (click)="viewUser(user)">
+
+                                <i class="bi bi-eye"></i>
+
+                                View
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =========================
+         FOOTER
+    ========================== -->
+
+        <div *ngIf="
+        !loading &&
+        users.length > 0
+      " class="table-footer">
+
+            Showing
+
+            <strong>
+                {{ filteredUsers.length }}
+            </strong>
+
+            of
+
+            <strong>
+                {{ users.length }}
+            </strong>
+
+            users
+
+        </div>
+
+    </div>
+
+</div>
